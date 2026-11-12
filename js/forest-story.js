@@ -26,19 +26,24 @@
     return Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - innerHeight)));
   }
 
+  // 위 사다리꼴 / 가운데 사각형 / 아래 사다리꼴 세 자리는 그대로 두고,
+  // 사진이 그 자리를 원통처럼 돌아감: 위 자리를 지난 사진은 화면 위로 날아가지 않고 원통 뒤로 넘어가 사라지고,
+  // 뒤를 돌아 아래 자리로 다시 나타남 (마지막 사진 다음엔 첫 사진 — 끝없이 도는 원통)
   let cur = 0, shown = -1, raf = 0, visible = false;
   function render() {
     const h = reel.clientHeight;
     frames.forEach((el, i) => {
-      const d = i - cur;                     // 0: 가운데, -1: 위(지나감), +1: 아래(다음)
-      const a = Math.abs(d);
-      const y = d * h * 0.9;
-      // 사진마다 자기 중심 기준 원근 → 위 사진은 아래쪽(가운데 쪽)이 넓고, 아래 사진은 위쪽이 넓은 사다리꼴
-      const rot = Math.max(-72, Math.min(72, -d * 64));
-      const s = 1 - Math.min(a, 1.5) * 0.04;
+      let d = ((i - cur) % N + N) % N;       // 원통 둘레에서의 위치
+      if (d > N / 2) d -= N;                 // 0: 가운데, -1: 위, +1: 아래
+      const a = Math.abs(d), sg = Math.sign(d);
+      const back = Math.max(0, a - 1);       // 1을 넘으면 원통 뒤쪽으로 넘어가는 정도
+      // 위·아래 자리(±1)까지는 전과 똑같이 움직이고, 그 뒤로는 더 멀리 가지 않고 안쪽으로 물러나며 작아짐
+      const y = (a <= 1 ? d : sg * (1 - back * 0.35)) * h * 0.9;
+      const rot = a <= 1 ? -d * 64 : -sg * Math.min(64 + back * 30, 84);
+      const s = (1 - Math.min(a, 1) * 0.04) * (1 - Math.min(back, 1) * 0.25);
       el.style.transform = `translateY(${y.toFixed(1)}px) perspective(700px) rotateX(${rot.toFixed(2)}deg) scale(${s.toFixed(3)})`;
       const g = Math.min(a, 1);
-      el.style.opacity = a > 1.6 ? 0 : (1 - g * 0.4).toFixed(3);
+      el.style.opacity = back >= 0.6 ? 0 : ((1 - g * 0.4) * (1 - back / 0.6)).toFixed(3);
       // 앞뒤 사진은 흐리고 회색빛으로 (시안의 흐린 회색 사다리꼴)
       el.style.filter = `blur(${(Math.min(a, 1.5) * 6).toFixed(1)}px) grayscale(${g}) brightness(${(1 + g * 0.7).toFixed(2)})`;
       el.style.zIndex = String(10 - Math.round(a * 3));
