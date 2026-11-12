@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ko" class="is-loading">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FEELD — 자연을 담고, 감각을 잇다</title>
+  <meta name="description" content="FEELD는 우리가 직접 걸어 기록한 숲을 관객의 손끝에서 다시 경험하도록 만든 인터랙티브 미디어아트입니다." />
+  <!-- 브라우저 탭 아이콘: FEELD 잎 심볼 -->
+  <link rel="icon" type="image/png" href="assets/img/brand/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/img/brand/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <!-- 엽서 글씨 폰트: 김정철명조는 Adobe Fonts 전용이라, Adobe Fonts 웹 프로젝트에서 받은
+       <link rel="stylesheet" href="https://use.typekit.net/xxxxxxx.css"> 를 아래 줄 대신 넣으면 됨.
+       그 전까지는 비슷한 나눔명조로 대신 보임 -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" />
+  <!-- 첫 화면 FEELD 이탤릭 세리프 -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400&display=swap" />
+  <link rel="stylesheet" href="css/style.css?v=52" />
+  <link rel="preload" href="assets/splat/forest-gs.bin" as="fetch" crossorigin />
+</head>
+<body>
+
+  <!-- 00. LOADING — 입자가 모여 잎 심볼이 되고 시작 화면으로 (js/loader.js) -->
+  <div class="loader" aria-hidden="true">
+    <canvas class="loader__gl"></canvas>
+    <img class="loader__mark" src="assets/img/brand/leaf.png" alt="" />
+  </div>
+  <script src="js/loader.js?v=1"></script>
+
+  <a class="logo is-hidden" href="#top" aria-label="FEELD 처음으로">
+    <img class="logo__mark" src="assets/img/logo-mark.png" alt="" width="31" height="32" />
+    <img class="logo__type" src="assets/img/logo-type.png" alt="FEELD" width="147" height="27" />
+  </a>
+
+  <main id="top">
+
+    <!-- 01. HERO (B안: 화면 가득 이끼 가지 + FEELD) — 예전 유목 히어로는 아래 template에 보관 -->
+    <section class="hero2" aria-label="FEELD 소개">
+      <div class="hero2__bg" aria-hidden="true"><img src="assets/img/hero-moss-branch.webp" alt="" /></div>
+      <div class="hero2__sub reveal" style="--d:.3s">
+        <p>Capturing nature, connecting the senses</p>
+        <p class="hero2__ko">자연을 담고, 감각을 잇다</p>
+      </div>
+      <h1 class="hero2__title reveal" style="--d:.5s">FEELD</h1>
+      <p class="hero2__tag reveal" style="--d:.75s">Feel the field</p>
+    </section>
+
+    <template id="hero-old-saved">
+    <!-- 01. HERO (A안: 떠 있는 유목) — 되돌리려면 위 .hero2 섹션을 지우고 이 안의 내용을 꺼내면 됨 -->
+    <section class="hero" aria-label="FEELD 소개">
+      <div class="hero__copy">
+        <h1 class="hero__title reveal-lines">
+          <span class="line"><span>자연을 담고,</span></span>
+          <span class="line"><span>감각을 잇다</span></span>
+        </h1>
+        <p class="hero__desc reveal" style="--d:.45s">
+          FEELD는 우리가 직접 걸어 기록한 숲을 관객의 손끝에서<br />
+          다시 경험하도록 만든 인터랙티브 미디어아트입니다.
+        </p>
+      </div>
+
+      <!-- 3D 유목: js/hero3d.js가 canvas에 렌더링. 로딩 전/WebGL 미지원 시에는 이미지가 보임 -->
+      <figure class="hero__visual reveal" style="--d:.2s">
+        <img class="hero__poster js-tilt" src="assets/img/hero-moss-log-tone.webp" alt="이끼와 풀이 자란 나무 유목" width="1255" height="785" />
+        <canvas class="hero__3d" aria-hidden="true"></canvas>
+      </figure>
+    </section>
+    </template>
+
+    <!-- 02~03. ABOUT → TECHNOLOGY — 한 화면에 고정된 채, 스크롤하면 글과 내용이 TECHNOLOGY로 넘어감 (js/main.js 5번) -->
+    <section class="story" aria-label="ABOUT FEELD · OUR TECHNOLOGY">
+      <div class="story__sticky">
+        <div class="story__bg" aria-hidden="true"><img src="assets/img/about-forest.webp" alt="" /></div>
+
+        <div class="story__page story__about">
+          <p class="about__label reveal">ABOUT FEELD</p>
+          <h2 id="about-title" class="about__title reveal-lines">
+            <span class="line"><span>우리는 화면 속 숲보다,</span></span>
+            <span class="line"><span>실제로 걸었던 숲을 전하고 싶었습니다.</span></span>
+          </h2>
+          <p class="about__body reveal" style="--d:.35s">
+            이미지로 만든 숲은 점점 실제 풍경과 구분하기 어려워지고 있습니다.<br />
+            FEELD는 직접 걸은 숲길을 촬영하고, 그곳의 소리를 기록하는 일에서 시작했습니다.<br />
+            화면에 다 담기지 않는 이끼와 나무껍질의 감촉은, 관객의 손으로 이어집니다.
+          </p>
+        </div>
+
+        <div class="story__page story__tech" aria-hidden="true">
+          <p class="tech__label st">OUR TECHNOLOGY</p>
+          <h2 id="tech-title" class="story__title st" style="--i:1">기록한 숲을 공간으로 만들고,<br />손의 움직임으로 다시 엽니다</h2>
+          <p class="story__body st" style="--i:2">
+            숲길은 360도 카메라로 기록하고, 촬영 데이터는 3D 가우시안 스플랫 방식으로<br />
+            공간화했습니다. 관객의 손은 Leap Motion으로 인식하며, 손의 움직임에 따라<br />
+            화면의 색과 시점, 소리가 변화합니다.
+          </p>
+          <div class="story__cards">
+            <div class="story__card st" style="--i:3"><b>01 RECORD</b><p>안산 메타세쿼이아 숲길을<br />360도 영상과 소리로 기록</p></div>
+            <div class="story__card st" style="--i:4"><b>02 SPLAT</b><p>수백만 개의 빛 입자로<br />숲을 공간으로 재구성</p></div>
+            <div class="story__card st" style="--i:5"><b>03 TOUCH</b><p>손끝의 움직임으로<br />흩어진 숲을 다시 모음</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03-0. NAME — FEELD 이름 소개 (배경: assets/img/name-bg.webp, 로고: assets/img/brand) -->
+    <section class="name" aria-label="FEELD 이름의 뜻">
+      <div class="name__bg" aria-hidden="true"><img src="assets/img/name-bg.webp" alt="" /></div>
+      <div class="name__inner">
+        <h2 class="name__logo reveal">
+          <img class="name__leaf" src="assets/img/brand/leaf.png" alt="" />
+          <img class="name__word" src="assets/img/brand/wordmark.png" alt="FEELD" />
+        </h2>
+        <ul class="name__list">
+          <li class="reveal" style="--d:.25s"><b>FEEL.</b> 관객은 색을 잃은 숲을 마주하고, 자연물 위에 손을 펴 그 감촉을 느낍니다.</li>
+          <li class="reveal" style="--d:.4s"><b>FILL.</b> 손을 펴고 머문 만큼 숲길을 걸으며 숲 본래의 색이 화면을 채웁니다.</li>
+          <li class="reveal" style="--d:.55s"><b>FIELD.</b> 색을 모두 채우면 직접 촬영하고, 녹음한 실제 장소가 드러나게 됩니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 03-3. OUR FOREST — 스크롤하면 사진이 아래에서 위로 넘어가고, 사진마다 글이 바뀜 (js/forest-story.js)
+         사진·글은 임시: assets/img/forest/ 사진과 아래 forest__text 문구를 바꾸면 됨 -->
+    <section class="forest" aria-labelledby="forest-title">
+      <div class="forest__sticky">
+        <div class="forest__head">
+          <p class="about__label">OUR FOREST</p>
+          <h2 id="forest-title" class="forest__title">우리가 걸은 숲, 안산 메타세쿼이아</h2>
+        </div>
+        <div class="forest__reel" aria-hidden="true">
+          <figure class="forest__frame" data-i="0"><img src="assets/img/forest/panel1.webp" alt="" /></figure>
+          <figure class="forest__frame" data-i="1"><img src="assets/postcard/photo2.webp" alt="" /></figure>
+          <figure class="forest__frame" data-i="2"><img src="assets/img/forest/panel2.webp" alt="" /></figure>
+          <figure class="forest__frame" data-i="3"><img src="assets/img/forest/panel3.webp" alt="" /></figure>
+          <figure class="forest__frame" data-i="4"><img src="assets/img/sec-path.jpg" alt="" /></figure>
+        </div>
+        <div class="forest__texts" aria-live="polite">
+          <div class="forest__text" data-i="0">
+            <h3>도시 가까이에서 만난 깊은 숲</h3>
+            <p>안산 메타세쿼이아 숲길은 도심에서 멀지 않지만,<br />한 걸음만 들어서면 소리와 공기가 달라집니다.<br />누구나 걸어갈 수 있는 거리에 있는 숲이라는 점이<br />우리가 이 숲을 고른 첫 번째 이유였습니다.</p>
+          </div>
+          <div class="forest__text" data-i="1">
+            <h3>곧게 뻗은 나무가 만드는 리듬</h3>
+            <p>하늘로 곧게 뻗은 메타세쿼이아가 일정한 간격으로 서 있어,<br />걷는 동안 나무 사이로 빛과 그림자가 규칙적으로 지나갑니다.<br />이 리듬은 360도 촬영과<br />가우시안 스플랫으로 공간을 옮기기에 잘 맞았습니다.</p>
+          </div>
+          <div class="forest__text" data-i="2">
+            <h3>잎 사이로 스며드는 빛</h3>
+            <p>오후가 되면 잎 사이로 낮은 빛이 스며들어<br />숲의 색이 가장 선명해집니다.<br />우리는 이 시간대에 맞춰 여러 번 숲을 찾았고,<br />그 빛을 그대로 기록하려 했습니다.</p>
+          </div>
+          <div class="forest__text" data-i="3">
+            <h3>손끝에 닿는 이끼와 흙</h3>
+            <p>발밑에는 이끼와 고사리, 쓰러진 나무가 가득합니다.<br />화면으로는 다 전할 수 없는 이 감촉을<br />체험대 위 자연물로 옮겨,<br />관객이 직접 손으로 만질 수 있게 했습니다.</p>
+          </div>
+          <div class="forest__text" data-i="4">
+            <h3>우리가 걸은 길</h3>
+            <p>숲길을 따라 걸으며 영상과 소리를 기록했습니다.<br />그렇게 모은 숲은 입자가 되어 전시장에 다시 펼쳐지고,<br />관객의 손끝에서<br />처음 우리가 걸었던 그 숲으로 돌아옵니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03-1b. JOURNEY — 숲길 곡선 위 7단계 (js/journey.js)
+         좌표는 시안(1595×884) 기준 viewBox 그대로 사용 -->
+    <section class="journey" aria-labelledby="journey-step">
+      <img class="journey__bg" src="assets/img/journey-bg.webp" alt="" aria-hidden="true" />
+      <div class="journey__head">
+        <p class="about__label">MAKING PROCESS</p>
+        <h2 class="journey__title">숲을 걷는 일에서, 손끝의 숲이 되기까지</h2>
+        <p class="journey__guide">선 위의 점을 눌러 제작 과정을 확인해보세요.</p>
+      </div>
+      <svg class="journey__svg" viewBox="0 -190 1595 884" aria-hidden="false">
+        <defs>
+          <filter id="jGlow" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur stdDeviation="6" />
+          </filter>
+        </defs>
+        <g class="journey__track" transform="translate(797.5 347.5) scale(0.8) translate(-797.5 -347.5)">
+        <path class="journey__path" d="M129.0,311.0 C134.7,303.1 150.0,277.7 163.1,263.5 C176.3,249.4 191.3,235.6 207.9,226.1 C224.4,216.5 243.7,208.6 262.5,206.3 C281.2,203.9 301.4,208.7 320.5,212.1 C339.7,215.5 358.5,220.9 377.2,226.4 C395.9,231.9 414.1,239.5 432.7,245.0 C451.4,250.6 470.4,259.0 489.3,259.8 C508.2,260.6 528.1,256.0 546.2,249.7 C564.3,243.5 581.2,232.4 597.8,222.3 C614.5,212.2 630.0,200.2 646.2,189.3 C662.3,178.3 678.1,166.8 694.7,156.6 C711.4,146.5 728.2,136.4 745.9,128.3 C763.5,120.2 781.9,112.3 800.7,107.9 C819.4,103.5 839.7,99.6 858.5,101.9 C877.3,104.1 895.7,113.6 913.4,121.4 C931.2,129.2 947.9,139.6 965.2,148.7 C982.4,157.9 999.1,168.2 1016.7,176.4 C1034.4,184.6 1052.4,192.8 1071.0,197.9 C1089.7,202.9 1109.5,205.0 1128.8,206.6 C1148.2,208.2 1167.9,206.9 1187.4,207.6 C1206.8,208.2 1226.6,208.0 1245.8,210.7 C1265.0,213.4 1284.7,216.9 1302.7,223.8 C1320.7,230.7 1336.6,243.0 1353.8,252.1 C1371.0,261.2 1387.7,273.2 1406.0,278.3 C1424.4,283.5 1454.3,282.2 1464.0,283.0" />
+        <g class="journey__flag">
+          <line x1="1464.5" y1="283" x2="1464.5" y2="214.2" />
+          <polygon points="1464.5,214.2 1497.0,225.5 1464.5,236.8" />
+        </g>
+        <g class="journey__walker">
+          <circle r="15.0" class="journey__walker-glow" filter="url(#jGlow)" />
+          <circle r="4.75" class="journey__walker-core" />
+        </g>
+        <g class="journey__dots">
+          <g class="journey__dot" tabindex="0" role="button" data-step="WALK" data-cap="직접 걸을 숲을 찾아 안산 메타세쿼이아 숲길 답사" transform="translate(129 311)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
+          <g class="journey__dot" tabindex="0" role="button" data-step="RECORD" data-cap="Insta360으로 숲길을 걸으며 360도 촬영, Zoom H3-VR로 숲의 소리 녹음" transform="translate(278 206)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
+          <g class="journey__dot" tabindex="0" role="button" data-step="SPLAT" data-cap="촬영한 영상을 3D 가우시안 스플랫으로 바꿔 수백만 개의 빛 입자로 재구성" transform="translate(505 261)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
+          <g class="journey__dot" tabindex="0" role="button" data-step="SPACE" data-cap="입자를 Unity로 옮겨 걸어 들어갈 수 있는 숲 공간으로 연출" transform="translate(855 101)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
+          <g class="journey__dot" tabindex="0" role="button" data-step="TOUCH" data-cap="Leap Motion으로 손을 읽어, 머무는 시간과 움직임에 따라 숲의 색과 소리가 돌아오게" transform="translate(1120 206)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
+          <g class="journey__dot" tabindex="0" role="button" data-step="TABLE" data-cap="이끼와 유목, 나무껍질로 직접 손을 얹는 체험대 제작" transform="translate(1369 261)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
+          <g class="journey__dot" tabindex="0" role="button" data-step="FEELD" data-cap="미디어월과 체험대를 하나의 방으로 엮어, 우리가 걸은 숲을 관객의 손끝으로" transform="translate(1464 283)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
+        </g>
+        </g>
+        <line class="journey__rule" x1="302.7" y1="347.5" x2="1291.5" y2="347.5" />
+      </svg>
+      <div class="journey__text" aria-live="polite">
+        <p id="journey-step" class="journey__step">1. WALK</p>
+        <p class="journey__cap">직접 걸을 숲을 찾아 안산 메타세쿼이아 숲길 답사</p>
+      </div>
+    </section>
+
+    <!-- 03-1. PROCESS 회전 갤러리 — 현재 사이트에서 빼 둔 상태 (보관용)
+         다시 넣으려면: 아래 <template> 태그 두 줄을 지우고, 맨 아래 process-ring.js 스크립트 주석을 해제
+         관련 파일: js/process-ring.js, css "03-1. Process ring" 블록, assets/img/process/p01~p10.webp -->
+    <template id="process-gallery-saved">
+    <section class="process" aria-labelledby="process-title">
+      <div class="process__sticky">
+        <div class="process__bg" aria-hidden="true"><img src="assets/img/process/p05.webp" alt="" /></div>
+
+        <div class="process__head">
+          <p class="about__label reveal">PROCESS</p>
+          <h2 id="process-title" class="process__title reveal-lines">
+            <span class="line"><span>숲을 걷고, 기록하고,</span></span>
+            <span class="line"><span>다시 손끝으로 옮기기까지</span></span>
+          </h2>
+        </div>
+
+        <div class="process__ring">
+          <figure data-step="WALK" data-cap="팀원들과 안산 메타세쿼이아 숲길 답사"><img src="assets/img/process/p01.webp" alt="숲길을 답사하는 팀원들" /></figure>
+          <figure data-step="RECORD" data-cap="Insta360으로 숲길을 걸으며 360도 촬영"><img src="assets/img/process/p02.webp" alt="숲길에 세운 360도 카메라" /></figure>
+          <figure data-step="SOUND" data-cap="Zoom H3-VR로 숲의 소리를 녹음"><img src="assets/img/process/p03.webp" alt="숲에서 소리를 녹음하는 녹음기" /></figure>
+          <figure data-step="SPLAT" data-cap="촬영 데이터를 수백만 개의 빛 입자로 재구성"><img src="assets/img/process/p04.webp" alt="흰 빛의 입자로 재구성된 숲" /></figure>
+          <figure data-step="SPACE" data-cap="입자를 모아 걸어 들어갈 수 있는 숲 공간으로"><img src="assets/img/process/p05.webp" alt="입자로 다시 만든 숲길" /></figure>
+          <figure data-step="TRACK" data-cap="Leap Motion으로 손가락 마디까지 인식"><img src="assets/img/process/p06.webp" alt="손 인식 화면" /></figure>
+          <figure data-step="TOUCH" data-cap="이끼 위에 손을 얹는 체험 테스트"><img src="assets/img/process/p07.webp" alt="이끼 위에 손을 얹은 모습" /></figure>
+          <figure data-step="TABLE" data-cap="이끼와 유목으로 만든 체험대"><img src="assets/img/process/p08.webp" alt="이끼와 유목으로 만든 체험대" /></figure>
+          <figure data-step="WALL" data-cap="미디어월에 숲을 띄우는 공간 테스트"><img src="assets/img/process/p09.webp" alt="미디어월 테스트" /></figure>
+          <figure data-step="FEELD" data-cap="손끝에서 다시 깨어나는 숲"><img src="assets/img/process/p10.webp" alt="전시 공간의 FEELD" /></figure>
+        </div>
+
+        <div class="process__cap" aria-live="polite">
+          <p class="process__meta"><span class="process__no">01</span><span class="process__total"> / 10</span><b class="process__step">WALK</b></p>
+          <p class="process__text">팀원들과 안산 메타세쿼이아 숲길 답사</p>
+          <div class="process__bar" aria-hidden="true"><i></i></div>
+          <p class="process__hint">스크롤하여 제작 과정을 둘러보세요</p>
+        </div>
+      </div>
+    </section>
+    </template>
+
+    <!-- 03-2. TOUCH — 누르고 있으면 깨어나는 숲 (js/forest-touch.js) -->
+    <section class="touch" aria-label="손으로 깨우는 숲">
+      <canvas class="touch__gl" data-src="assets/splat/forest-gs.bin" aria-hidden="true"></canvas>
+      <div class="touch__hint reveal">
+        <span class="touch__dot" aria-hidden="true"></span>
+        <p class="touch__main">마우스를 클릭한 채로 기다려 보세요</p>
+        <p class="touch__sub">흩어진 빛이 모여 숲이 깨어납니다 · 클릭한 채로 움직이면 숲이 일렁입니다</p>
+      </div>
+    </section>
+
+    <!-- 04. EXPERIENCE (풀배경) -->
+    <section class="about bleed bleed--hand" aria-labelledby="exp-title">
+      <div class="about__bg" aria-hidden="true"><img src="assets/img/sec-hand.jpg" alt="" /></div>
+      <div class="about__inner">
+        <p class="about__label reveal">EXPERIENCE</p>
+        <h2 id="exp-title" class="about__title reveal-lines">
+          <span class="line"><span>손끝이 닿는 곳에서,</span></span>
+          <span class="line"><span>숲이 다시 깨어납니다.</span></span>
+        </h2>
+        <p class="about__body reveal" style="--d:.35s">
+          숲에서 직접 녹음한 바람과 새소리가 손의 움직임을 따라 커지고 잦아듭니다.<br />
+          정면의 미디어월과 양옆을 감싼 커튼이 숲의 빛을 머금어, 방 전체가 하나의 숲이 됩니다.<br />
+          눈으로만 보는 숲이 아니라, 손과 귀와 몸으로 머무는 숲입니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- 05. EXHIBITION SPACE — 왼쪽: 스팟 설명 / 오른쪽: 입자로 만든 전시장 도면 (js/space3d.js)
+         스크롤하면 관람 동선을 따라 멈춤 없이 걸어가고, 지나가는 스팟이 왼쪽에서 밝아짐
+         (이전 버전: 선 평면도 js/space-plan.js + css "05-b" — 지금은 쓰지 않음) -->
+    <section class="space3d" aria-labelledby="space-title">
+      <div class="space3d__sticky">
+        <div class="space3d__copy">
+          <p class="split__label">EXHIBITION SPACE</p>
+          <h2 id="space-title" class="space3d__title">숲으로 들어가는<br />하나의 방</h2>
+          <ol class="space3d__spots">
+            <li class="space3d__spot" data-spot="1" role="button" tabindex="0"><span>01</span><div><b>입구 · 굿즈 ZONE</b><p>들어오자마자 기록한 숲을 담은 엽서와 굿즈를 만나요. 나가는 길도 이곳이에요.</p></div></li>
+            <li class="space3d__spot" data-spot="2" role="button" tabindex="0"><span>02</span><div><b>웹사이트</b><p>계단석에 놓인 화면에서 FEELD를 둘러보고, 나만의 엽서를 만들어요.</p></div></li>
+            <li class="space3d__spot" data-spot="3" role="button" tabindex="0"><span>03</span><div><b>메이킹 필름</b><p>메이킹 필름을 보며, 숲을 걷고 기록해 FEELD를 만들기까지의 작업 과정을 살펴봐요.</p></div></li>
+            <li class="space3d__spot" data-spot="4" role="button" tabindex="0"><span>04</span><div><b>체험 ZONE</b><p>미디어월 앞 체험대에 손을 얹으면, 손을 따라 숲이 깨어나요.</p></div></li>
+          </ol>
+        </div>
+        <div class="space3d__view">
+          <canvas class="space3d__gl" aria-label="입자로 만든 전시장 도면"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06. TEAM — 7명 (사진은 흰 박스 안에: assets/img/team/01~07.webp 넣고 img 주석 해제) -->
+    <section class="team-sec" aria-labelledby="team-title">
+      <p class="about__label reveal">TEAM. IT-DA</p>
+      <h2 id="team-title" class="team-sec__title reveal-lines"><span class="line"><span>자연과 사람을 잇습니다.</span></span></h2>
+      <div class="team__grid">
+          <figure class="team__member reveal" style="--d:0.00s">
+            <div class="team__photo"><!-- <img src="assets/img/team/01.webp" alt="전영서" /> --><span class="team__lead">LEADER</span></div>
+            <figcaption><em>PLANNER</em><b>전영서</b></figcaption>
+          </figure>
+          <figure class="team__member reveal" style="--d:0.07s">
+            <div class="team__photo"><!-- <img src="assets/img/team/02.webp" alt="손서윤" /> --></div>
+            <figcaption><em>PLANNER</em><b>손서윤</b></figcaption>
+          </figure>
+          <figure class="team__member reveal" style="--d:0.14s">
+            <div class="team__photo"><!-- <img src="assets/img/team/03.webp" alt="강민경" /> --></div>
+            <figcaption><em>DESIGNER</em><b>강민경</b></figcaption>
+          </figure>
+          <figure class="team__member reveal" style="--d:0.21s">
+            <div class="team__photo"><!-- <img src="assets/img/team/04.webp" alt="이혜윤" /> --></div>
+            <figcaption><em>DESIGNER</em><b>이혜윤</b></figcaption>
+          </figure>
+          <figure class="team__member reveal" style="--d:0.28s">
+            <div class="team__photo"><!-- <img src="assets/img/team/05.webp" alt="고예범" /> --></div>
+            <figcaption><em>PROGRAMMER</em><b>고예범</b></figcaption>
+          </figure>
+          <figure class="team__member reveal" style="--d:0.35s">
+            <div class="team__photo"><!-- <img src="assets/img/team/06.webp" alt="김다윤" /> --></div>
+            <figcaption><em>PROGRAMMER</em><b>김다윤</b></figcaption>
+          </figure>
+          <figure class="team__member reveal" style="--d:0.42s">
+            <div class="team__photo"><!-- <img src="assets/img/team/07.webp" alt="정혜진" /> --></div>
+            <figcaption><em>PROGRAMMER</em><b>정혜진</b></figcaption>
+          </figure>
+      </div>
+    </section>
+
+    <!-- 07. POSTCARD — 타이틀 + 엽서 만들기 + 다른 사람 엽서 구경 (js/postcard.js)
+         엽서 틀/우표/소인: assets/postcard (웹사이트 소스 SVG에서 변환), 사진 photo1~6은 임시 -->
+    <section class="postwrap" aria-labelledby="post-title">
+      <div class="post__head">
+        <h2 id="post-title" class="tech__label reveal">LETTER FROM THE FOREST</h2>
+
+      </div>
+      <div class="post">
+        <div class="post__bg" aria-hidden="true"><img src="assets/postcard/bg.webp" alt="" /></div>
+
+        <!-- A. 떠다니는 엽서들 -->
+        <div class="post__float" aria-label="다른 사람들이 만든 엽서"></div>
+        <button class="post__pill post__open" type="button">나의 엽서 만들기 <span aria-hidden="true">›</span></button>
+
+        <!-- B. 엽서 만들기 (1 사진 → 2 우표 → 3 글쓰기) -->
+        <div class="post__maker" data-step="0" aria-hidden="true">
+          <div class="post__stage"></div>
+          <div class="post__ui">
+            <p class="post__guide" data-for="1">엽서에 들어갈 사진을 골라주세요.</p>
+            <p class="post__guide" data-for="2">엽서에 들어갈 우표를 골라주세요.</p>
+            <div class="post__picker" data-for="1">
+              <button class="post__arrow post__prev" type="button" aria-label="이전 사진">◀</button>
+              <div class="post__track-wrap"><div class="post__track post__photos"></div></div>
+              <button class="post__arrow post__next" type="button" aria-label="다음 사진">▶</button>
+            </div>
+            <div class="post__picker" data-for="2">
+              <button class="post__arrow post__prev" type="button" aria-label="이전 우표">◀</button>
+              <div class="post__track-wrap"><div class="post__track post__stamps"></div></div>
+              <button class="post__arrow post__next" type="button" aria-label="다음 우표">▶</button>
+            </div>
+            <button class="post__pill post__nextstep" type="button" disabled>다음단계</button>
+            <div class="post__guide post__guide--write" data-for="3">
+              <p>자유롭게 엽서 안에 들어갈 글을 써주세요. (100자 이내)</p>
+              <p class="post__guide-sub">엽서를 완성했다면 우표를 클릭해 도장을 찍고,<br />엽서를 완성하세요.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- C. 엽서 크게 보기 (클릭하면 앞뒤 뒤집기) -->
+        <div class="post__viewer" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- 08. EXHIBITION (풀배경) -->
+    <section class="about bleed bleed--path" aria-labelledby="visit-title">
+      <div class="about__bg" aria-hidden="true"><img src="assets/img/sec-path.jpg" alt="" /></div>
+      <div class="about__inner">
+        <p class="about__label reveal">EXHIBITION</p>
+        <h2 id="visit-title" class="about__title reveal-lines">
+          <span class="line"><span>저희가 걸은 숲길을,</span></span>
+          <span class="line"><span>당신의 손으로 걸어 보세요.</span></span>
+        </h2>
+        <div class="visit__info">
+          <div class="reveal" style="--d:.3s"><small>일정</small><p>2026. 11. 20 (금) → 11. 22 (일)</p></div>
+          <div class="reveal" style="--d:.45s"><small>장소</small><p>계원예술대학교 디자인관 5층 크리에이티브 스튜디오</p></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 09. FOOTER — 큰 로고 마무리형 (연락처·학과·크레딧은 임시 문구) -->
+  <footer class="foot">
+    <div class="foot__top">
+      <p class="foot__close reveal" style="--d:.15s">손끝에 남은 숲의 감촉이, 오래 머물기를.</p>
+    </div>
+
+    <div class="foot__cols">
+      <div class="foot__col">
+        <small>EXHIBITION</small>
+        <p>FEELD — 손끝으로 걷는 숲</p>
+        <p>2026. 11. 20 (금) → 11. 22 (일)</p>
+        <p>계원예술대학교 디자인관 5층<br />크리에이티브 스튜디오</p>
+      </div>
+      <div class="foot__col">
+        <small>TEAM</small>
+        <p>팀 잇다</p>
+        <p>계원예술대학교 디지털미디어디자인학과</p>
+      </div>
+      <div class="foot__col">
+        <small>CREDIT</small>
+        <p>지도 교수 심한수</p>
+        <p>전영서 손서윤 강민경 이혜윤<br />고예범 김다윤 정혜진</p>
+      </div>
+    </div>
+
+    <div class="foot__brand" aria-hidden="true">
+      <img class="foot__word" src="assets/img/brand/wordmark.png" alt="" />
+      <img class="foot__leaf" src="assets/img/brand/leaf.png" alt="" />
+    </div>
+
+    <div class="foot__bottom">
+      <span>© 2026 Team 잇다. All rights reserved.</span>
+      <span>FEELD — Capstone Design Project</span>
+    </div>
+  </footer>
+
+  <!-- 맨 위로 (오른쪽 아래, 첫 화면을 지나면 나타남 — js/main.js 6번) -->
+  <button class="totop" type="button" aria-label="맨 위로">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+  </button>
+
+  <canvas class="cursor" aria-hidden="true"></canvas>
+
+  <script src="js/main.js?v=12"></script>
+  <script src="js/forest-touch.js?v=5"></script>
+  <!-- <script src="js/process-ring.js?v=6"></script>  (회전 갤러리 보관 중) -->
+  <script src="js/journey.js?v=4"></script>
+  <script src="js/forest-story.js?v=5"></script>
+  <script src="js/space3d.js?v=18"></script>
+  <script src="js/postcard.js?v=6"></script>
+  <script src="js/foot-particles.js?v=4"></script>
+  <!-- 3D 모델을 다시 쓰려면 아래 주석을 해제 (assets/model/driftwood.glb 교체 후)
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="js/hero3d.js"></script>
+  -->
+</body>
+</html>
