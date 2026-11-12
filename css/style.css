@@ -1097,7 +1097,7 @@ main > section:not(.hero):not(.hero2) { margin-top: var(--sec-gap); }
   white-space: pre-wrap;
   word-break: break-all;
   overflow: hidden;
-  transform: translateY(-.7cqw);
+  transform: translateY(1.05cqw);   /* 글자 아래가 쓰기 줄 바로 위에 앉도록 */
   text-align: left;
 }
 textarea.pc__text { background: transparent; border: 0; outline: 0; resize: none; cursor: text; }

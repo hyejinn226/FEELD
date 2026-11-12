@@ -28,9 +28,7 @@
     { photo: 3, stamp: 4, text: '천천히 걸어야 보이는 것들이 있어요.' },
     { photo: 1, stamp: 5, text: '손끝으로 이끼를 만지니\n숲이 다시 깨어났어요.' },
     { photo: 4, stamp: 1, text: '빛의 입자가 모여 숲이 되는 순간, 잠깐 숨을 참았어요.' },
-    { photo: 5, stamp: 3, text: '다음엔 그 숲길을 직접 걸어보고 싶어요.' },
     { photo: 0, stamp: 4, text: '오늘의 숲을 당신에게.' },
-    { photo: 2, stamp: 2, text: '함께 걸어줘서 고마워요.\n— 잇다' },
   ];
   const Store = {
     list() {
