@@ -373,7 +373,7 @@
     raf = 0;
     const time = (now - t0) / 1000;
     if (assembleStart < 0 && sec.getBoundingClientRect().top < innerHeight * 0.45) assembleStart = time;
-    const a = assembleStart < 0 ? 0 : Math.min(1, (time - assembleStart) / 6);
+    const a = assembleStart < 0 ? 0 : Math.min(1, (time - assembleStart) / 3.5);   // 입자가 모여 공간이 되는 시간(초)
     sp += (progress() - sp) * 0.018;                 // 스크롤을 천천히, 여유 있게 따라감
     const cam = camAt(sp);
     smx += (mx - smx) * 0.02; smy += (my - smy) * 0.02;

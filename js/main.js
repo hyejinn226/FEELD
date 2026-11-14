@@ -109,15 +109,7 @@
     check();
   }
 
-  /* ---------- 7. 왼쪽 위 로고: 첫 화면에서는 숨김, 그 다음부터 보임 ---------- */
-  const logo = document.querySelector('.logo'), hero = document.querySelector('.hero2');
-  if (logo) {
-    if (hero) {
-      new IntersectionObserver(([en]) => {
-        logo.classList.toggle('is-hidden', en.intersectionRatio > 0.35);
-      }, { threshold: [0, 0.35, 0.6, 1] }).observe(hero);
-    } else logo.classList.remove('is-hidden');
-  }
+  /* ---------- 7. 왼쪽 위 심볼: 첫 화면부터 항상 보임 (예전엔 첫 화면에서 숨겼음) ---------- */
 
   /* ---------- 6. 맨 위로 버튼 ---------- */
   const toTop = document.querySelector('.totop');
@@ -228,7 +220,7 @@
       for (let i = 0; i < n; i++) {
         const b = ghosts[i];
         const k = 1 - i / n;                       // 1(머리 쪽) → 0(끝)
-        ctx.strokeStyle = `rgba(255,255,255,${CFG.trailAlpha * k * alpha})`;
+        ctx.strokeStyle = `rgba(227,255,113,${CFG.trailAlpha * k * alpha})`;   // #E3FF71
         ctx.lineWidth = CFG.radius * 1.6 * k * scale;
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
@@ -237,12 +229,12 @@
         a = b;
       }
 
-      // 머리: 부드러운 흰색 원
+      // 머리: 부드러운 원 (#E3FF71)
       const r = CFG.radius * scale;
       const g = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, r * 1.6);
-      g.addColorStop(0, `rgba(255,255,255,${CFG.headAlpha * alpha})`);
-      g.addColorStop(0.55, `rgba(255,255,255,${CFG.headAlpha * 0.75 * alpha})`);
-      g.addColorStop(1, 'rgba(255,255,255,0)');
+      g.addColorStop(0, `rgba(227,255,113,${CFG.headAlpha * alpha})`);
+      g.addColorStop(0.55, `rgba(227,255,113,${CFG.headAlpha * 0.75 * alpha})`);
+      g.addColorStop(1, 'rgba(227,255,113,0)');
       ctx.globalCompositeOperation = 'source-over';
       ctx.fillStyle = g;
       ctx.beginPath();

@@ -60,8 +60,8 @@ html.is-loading .hero2__bg img { animation-play-state: paused; }
   position: fixed;
   transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
   z-index: 50;
-  top: 1.65vw;               /* ≈ 32px @1920 */
-  left: 3.8vw;               /* ≈ 73px @1920 */
+  top: 1.1vw;                /* ≈ 21px @1920 (시안 위치) */
+  left: 2.2vw;               /* ≈ 42px @1920 */
   display: inline-flex;
   align-items: center;
   gap: 0.3vw;
@@ -70,10 +70,7 @@ html.is-loading .hero2__bg img { animation-play-state: paused; }
 }
 .logo img {
   width: auto;
-  height: max(20px, 1.55vw);        /* ≈ 30px @1920 */
-}
-.logo__type {
-  height: max(17px, 1.3vw) !important;
+  height: max(30px, 2.4vw);         /* 시안 44.2 × 46px @1920 */
 }
 
 /* ---------- 01-B. Hero (화면 가득 이끼 가지 + FEELD) — 수치는 시안 1118×625 비율 기준 ---------- */
@@ -89,28 +86,27 @@ html.is-loading .hero2__bg img { animation-play-state: paused; }
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(to bottom, rgba(16,22,14,0) 72%, var(--bg) 100%);
 }
+/* 위치·크기는 시안(1920×1080) 기준: 문구 x377 y668, 로고 x941 y746 w498, Feel the Field 오른쪽 끝 x1566 y855 */
 .hero2__sub, .hero2__tag {
   position: absolute; z-index: 1; margin: 0;
-  font-size: max(13px, 1.45vw); font-weight: 300; letter-spacing: .01em;
-  color: rgba(255, 255, 255, .88);
+  font-weight: 300; letter-spacing: .01em; line-height: 1.25;
+  color: #EBEBEB;
   text-shadow: 0 1px 12px rgba(0, 0, 0, .35);
 }
-.hero2__sub { left: 18%; top: 49.6%; }
-.hero2__tag { right: 21.1%; top: 76%; }
+.hero2__sub { left: 19.6%; top: 61.4%; font-size: max(13px, 1.25vw); }
+.hero2__tag { right: 18.4%; top: 78.7%; font-size: max(15px, 1.67vw); }
 .hero2__title {
   position: absolute; z-index: 1; margin: 0;
-  left: 45.6%; top: 57.5%;
-  font-family: "Playfair Display", "Times New Roman", serif; font-style: italic; font-weight: 400;
-  font-size: max(54px, 9.3vw); line-height: 1; letter-spacing: -.01em;
-  color: #ECEAE2;
-  text-shadow: 0 2px 30px rgba(0, 0, 0, .35);
+  left: 49%; top: 69.1%;
+  width: max(180px, 25.94vw); line-height: 0;
 }
+.hero2__title img { display: block; width: 100%; height: auto; filter: drop-shadow(0 2px 24px rgba(0, 0, 0, .3)); }
 .hero2__sub p { margin: 0; }
-.hero2__ko { margin-top: .5em !important; font-size: .72em; font-weight: 400; letter-spacing: .02em; color: rgba(255, 255, 255, .72); }
+.hero2__ko { margin-top: .3em !important; font-size: .88em; font-weight: 400; letter-spacing: .02em; }
 @media (max-width: 768px) {
   .hero2__bg img { object-position: 38% 50%; }
   .hero2__sub { left: 20px; top: 46%; }
-  .hero2__title { left: auto; right: 20px; top: 52%; }
+  .hero2__title { left: auto; right: 20px; top: 56%; width: 52vw; }
   .hero2__tag { right: 20px; top: 66%; }
 }
 
@@ -1346,34 +1342,31 @@ html.has-cursor .cursor { display: block; }
 .totop.is-lift { bottom: calc(max(20px, 2.2vw) + max(64px, 4.6vw)); }
 .totop.is-hide { opacity: 0; pointer-events: none; }
 
-/* ---------- 09. Footer — 큰 로고 마무리형 ---------- */
-.foot { position: relative; margin-top: var(--sec-gap); padding: 7vw 7.9vw 2.2vw; overflow: hidden; }
-.foot__top { display: flex; align-items: baseline; justify-content: space-between; gap: 2vw; padding-bottom: 3.4vw; border-bottom: 1px solid rgba(255, 255, 255, .18); }
-.foot__motto { margin: 0; font-size: max(22px, 2.6vw); font-weight: 300; letter-spacing: .02em; }
-.foot__motto b { font-weight: 400; color: var(--accent); margin-right: .45em; }
-.foot__close { margin: 0; font-size: max(12px, .94vw); color: var(--text-dim); }
-.foot__cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.4vw; padding: 3vw 0 0; }
-.foot__col small { display: block; margin-bottom: 1.1vw; font-size: max(11px, .73vw); letter-spacing: .14em; color: var(--accent); }
-.foot__col p { margin: 0 0 .55vw; font-size: max(12px, .83vw); line-height: 1.7; color: rgba(255, 255, 255, .58); }
-.foot__col a { color: inherit; text-decoration: none; transition: color .25s; }
-.foot__col a:hover { color: var(--accent); }
+/* ---------- 09. Footer — 시안(푸터.png, 1920 기준) / 제목 #E3FF71, 본문 #EBEBEB ---------- */
+.foot {
+  position: relative; margin-top: var(--sec-gap); overflow: hidden;
+  padding: 4.7vw 3.9vw 3vw 3.75vw;
+  background: #0B0F0A; border-top: 1px solid rgba(227, 255, 113, .3);
+}
+.foot__cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2vw; }
+.foot__col small { display: block; margin-bottom: 1.8vw; font-size: max(12px, .94vw); font-weight: 600; line-height: 1.2; letter-spacing: .05em; color: #E3FF71; }
+.foot__col p { margin: 0 0 .9vw; font-size: max(12px, .83vw); line-height: 1.4; color: #EBEBEB; }
+.foot__dash { display: inline-block; width: 1.6em; height: 1px; margin: 0 .25em; vertical-align: middle; background: currentColor; }
+/* 큰 로고(왼쪽) + 저작권(오른쪽 아래, 로고 바닥선에 맞춤) */
+.foot__end { display: flex; align-items: flex-end; justify-content: space-between; gap: 2vw; margin-top: 2.95vw; }
 /* 로고를 입자로 그림 (js/foot-particles.js) — 이미지는 자리만 차지 */
-.foot__brand { position: relative; }
+.foot__brand { position: relative; flex: 0 0 76.7vw; line-height: 0; }
 .foot__gl { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .foot__brand.is-particles .foot__word { visibility: hidden; }
-.foot__brand { display: flex; align-items: flex-end; gap: 1.6vw; margin-top: 6vw; }
-.foot__word { flex: 1; min-width: 0; width: 100%; height: auto; opacity: .16; }
-.foot__leaf { width: 5.4vw; height: auto; opacity: .5; margin-bottom: .4vw; }
-.foot__bottom { display: flex; justify-content: space-between; margin-top: 2.2vw; font-size: max(11px, .73vw); color: rgba(255, 255, 255, .38); letter-spacing: .02em; }
+.foot__word { display: block; width: 100%; height: auto; }
+.foot__copy { margin: 0; white-space: nowrap; font-size: max(10px, .73vw); line-height: 1; letter-spacing: .01em; color: rgba(227, 255, 113, .5); }
 @media (max-width: 768px) {
-  .foot { padding: 72px 20px 24px; }
-  .foot__top { flex-direction: column; gap: 12px; padding-bottom: 28px; }
-  .foot__cols { grid-template-columns: 1fr 1fr; gap: 28px 20px; padding-top: 28px; }
-  .foot__col small { margin-bottom: 8px; }
-  .foot__col p { margin-bottom: 4px; }
-  .foot__brand { margin-top: 48px; gap: 10px; }
-  .foot__leaf { width: 40px; }
-  .foot__bottom { flex-direction: column; gap: 4px; margin-top: 16px; }
+  .foot { padding: 56px 20px 24px; }
+  .foot__cols { grid-template-columns: 1fr; gap: 28px; }
+  .foot__col small { margin-bottom: 12px; }
+  .foot__col p { margin-bottom: 6px; }
+  .foot__end { flex-direction: column; align-items: stretch; gap: 16px; margin-top: 40px; }
+  .foot__brand { flex: none; width: 100%; }
 }
 
 /* ---------- Mobile ---------- */

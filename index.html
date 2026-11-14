@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" />
   <!-- 첫 화면 FEELD 이탤릭 세리프 -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400&display=swap" />
-  <link rel="stylesheet" href="css/style.css?v=59" />
+  <link rel="stylesheet" href="css/style.css?v=62" />
   <link rel="preload" href="assets/splat/forest-gs.bin" as="fetch" crossorigin />
 </head>
 <body>
@@ -28,9 +28,8 @@
   </div>
   <script src="js/loader.js?v=1"></script>
 
-  <a class="logo is-hidden" href="#top" aria-label="FEELD 처음으로">
-    <img class="logo__mark" src="assets/img/logo-mark.png" alt="" width="31" height="32" />
-    <img class="logo__type" src="assets/img/logo-type.png" alt="FEELD" width="147" height="27" />
+  <a class="logo" href="#top" aria-label="FEELD 처음으로">
+    <img class="logo__mark" src="assets/img/brand/symbol-lime.png" alt="FEELD" width="44" height="46" />
   </a>
 
   <main id="top">
@@ -39,11 +38,11 @@
     <section class="hero2" aria-label="FEELD 소개">
       <div class="hero2__bg" aria-hidden="true"><img src="assets/img/hero-moss-branch.webp" alt="" /></div>
       <div class="hero2__sub reveal" style="--d:.3s">
-        <p>Capturing nature, connecting the senses</p>
+        <p>Capturing nature, Connecting the senses</p>
         <p class="hero2__ko">자연을 담고, 감각을 잇다</p>
       </div>
-      <h1 class="hero2__title reveal" style="--d:.5s">FEELD</h1>
-      <p class="hero2__tag reveal" style="--d:.75s">Feel the field</p>
+      <h1 class="hero2__title reveal" style="--d:.5s"><img src="assets/img/brand/wordmark.svg" alt="FEELD" width="500" height="93" /></h1>
+      <p class="hero2__tag reveal" style="--d:.75s">Feel the Field</p>
     </section>
 
     <template id="hero-old-saved">
@@ -389,38 +388,32 @@
 
   </main>
 
-  <!-- 09. FOOTER — 큰 로고 마무리형 (연락처·학과·크레딧은 임시 문구) -->
+  <!-- 09. FOOTER — 시안(푸터.png): 위 가는 선 / EXHIBITION·TEAM·CREDIT 3열 / 큰 FEELD 로고(입자) + 오른쪽 아래 저작권 -->
   <footer class="foot">
-    <div class="foot__top">
-      <p class="foot__close reveal" style="--d:.15s">손끝에 남은 숲의 감촉이, 오래 머물기를.</p>
-    </div>
-
     <div class="foot__cols">
       <div class="foot__col">
         <small>EXHIBITION</small>
-        <p>FEELD — 손끝으로 걷는 숲</p>
-        <p>2026. 11. 20 (금) → 11. 22 (일)</p>
-        <p>계원예술대학교 디자인관 5층<br />크리에이티브 스튜디오</p>
+        <p>FEELD <span class="foot__dash" aria-hidden="true"></span> 손끝으로 걷는 숲</p>
+        <p>2026. 11. 20 (금) - 2026. 11. 22 (일)</p>
+        <p>계원예술대학교 디자인관 5층<br />503C 크리에이티브 스튜디오</p>
       </div>
       <div class="foot__col">
         <small>TEAM</small>
-        <p>팀 잇다</p>
-        <p>계원예술대학교 디지털미디어디자인과</p>
+        <p>잇다 IT-DA</p>
+        <p>계원예술대학교 디지털 미디어 디자인과</p>
       </div>
       <div class="foot__col">
         <small>CREDIT</small>
-        <p>전영서 손서윤<br />강민경 이혜윤<br />고예범 김다윤 정혜진</p>
+        <p>지도 교수 심한수 교수님</p>
+        <p>손서윤 전영서 강민경 이혜윤<br />고예범 김다윤 정혜진</p>
       </div>
     </div>
 
-    <div class="foot__brand" aria-hidden="true">
-      <img class="foot__word" src="assets/img/brand/wordmark.png" alt="" />
-      <img class="foot__leaf" src="assets/img/brand/leaf.png" alt="" />
-    </div>
-
-    <div class="foot__bottom">
-      <span>© 2026 Team 잇다. All rights reserved.</span>
-      <span>FEELD — Capstone Design Project</span>
+    <div class="foot__end">
+      <div class="foot__brand" aria-hidden="true">
+        <img class="foot__word" src="assets/img/brand/wordmark.svg" alt="" width="500" height="93" />
+      </div>
+      <p class="foot__copy">© 2026 FEELD. ALL RIGHTS RESERVED.</p>
     </div>
   </footer>
 
@@ -431,14 +424,14 @@
 
   <canvas class="cursor" aria-hidden="true"></canvas>
 
-  <script src="js/main.js?v=12"></script>
+  <script src="js/main.js?v=14"></script>
   <script src="js/forest-touch.js?v=5"></script>
   <!-- <script src="js/process-ring.js?v=6"></script>  (회전 갤러리 보관 중) -->
   <script src="js/journey.js?v=4"></script>
   <script src="js/forest-story.js?v=7"></script>
-  <script src="js/space3d.js?v=19"></script>
+  <script src="js/space3d.js?v=20"></script>
   <script src="js/postcard.js?v=7"></script>
-  <script src="js/foot-particles.js?v=4"></script>
+  <script src="js/foot-particles.js?v=10"></script>
   <!-- 3D 모델을 다시 쓰려면 아래 주석을 해제 (assets/model/driftwood.glb 교체 후)
   <script type="importmap">
     {
