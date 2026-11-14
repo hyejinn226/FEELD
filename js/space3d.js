@@ -213,7 +213,9 @@
   in vec3 vCol; out vec4 o;
   void main(){
     float r = length(gl_PointCoord - .5);
-    o = vec4(vCol * exp(-r * r * 14.), 0.);   // 가장자리가 부드럽게 퍼지는 입자
+    vec3 c = vCol * exp(-r * r * 14.);        // 가장자리가 부드럽게 퍼지는 입자
+    // 알파를 밝기만큼 같이 내보냄 (알파 0이면 사파리가 투명으로 지워 버림)
+    o = vec4(c, min(1., max(c.r, max(c.g, c.b))));
   }`;
   function sh(type, src) {
     const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
