@@ -33,8 +33,9 @@
   const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 
   const W = 8.68, D = 6.85, HGT = 3.0;
-  // 나무 바닥 영역 (일러스트의 초록 영역, 왼쪽 아래 모서리가 둥금)
-  const WX0 = 1.23, WZ0 = 1.3, WZ1 = 4.79, WR = 1.8;
+  // 나무 바닥 영역 (위에서 본 배치도의 분홍 영역: 왼쪽 벽 바로 옆부터, 입구 쪽 모서리가 반원으로 둥금)
+  // 바닥보다 FUP만큼 한 단 높음 — 커튼을 열고 들어오면 이 둥근 단이 바로 보임
+  const WX0 = 0.4, WZ0 = 1.3, WZ1 = 4.1, WR = 1.85, FUP = 0.1;
   function inWood(x, z) {
     if (x < WX0 || z < WZ0 || z > WZ1) return false;
     const cx = WX0 + WR, cz = WZ1 - WR;
@@ -51,20 +52,21 @@
       const x = rnd() * W, z = rnd() * D, l = lightAt(x, z);
       if (inWood(x, z)) {
         const plank = 0.5 + 0.5 * Math.sin(z * 31.4);
-        add(x, 0, z, 0.2 + plank * 0.08 + l * 0.7 + rnd() * 0.05, mix(WOOD, WARM, Math.min(1, l)));
+        add(x, FUP, z, 0.2 + plank * 0.08 + l * 0.7 + rnd() * 0.05, mix(WOOD, WARM, Math.min(1, l)));
       } else if (rnd() < 0.55) {
         add(x, 0, z, 0.1 + l * 0.8 + rnd() * 0.04, mix(WHITE, WARM, Math.min(1, l * 1.4)));
       }
     }
-    // 바닥 경계선 (나무 바닥 테두리)
-    for (let i = 0; i < N(2600); i++) {
+    // 나무 바닥 테두리: 윗모서리 선 + 단차 옆면 (반원 쪽과 앞쪽 긴 변)
+    for (let i = 0; i < N(5200); i++) {
       const t = rnd();
       let x, z;
       const seg = rnd() * 3;
-      if (seg < 1) { x = WX0 + WR + t * (W - WX0 - WR); z = WZ1; }
-      else if (seg < 2) { x = WX0; z = WZ0 + t * (WZ1 - WR - WZ0); }
+      if (seg < 1.6) { x = WX0 + WR + t * (W - WX0 - WR); z = WZ1; }
+      else if (seg < 1.8) { x = WX0; z = WZ0 + t * (WZ1 - WR - WZ0); }
       else { const a = Math.PI / 2 + t * Math.PI / 2; x = WX0 + WR + Math.cos(a) * WR; z = WZ1 - WR + Math.sin(a) * WR; }
-      add(x, 0.005, z, 0.55, WOOD);
+      if (rnd() < 0.5) add(x, FUP + 0.005, z, 0.55, WOOD);    // 윗모서리
+      else add(x, rnd() * FUP, z, 0.3, WOOD);                 // 단차 옆면
     }
   }
   // 벽 (평범한 벽: 어둡고 고르게)
@@ -110,46 +112,146 @@
   // --- 벽 ---
   wall('x', 0, 0, W, HGT, 380);                      // 뒤쪽 벽 (계단석 뒤)
   wall('z', W, 0, D, HGT, 380);                      // 오른쪽 벽
-  wall('z', 0, 0, 0.45, HGT, 380);                   // 왼쪽 벽 (입구 위쪽)
-  wall('z', 0, 1.2, 2.15, HGT, 380);                 // 왼쪽 벽 (입구 아래 ~ 커튼 전)
+  wall('z', 0, 0, 2.11, HGT, 380, 0.2);              // 왼쪽 위: 전시 설명 가벽 (예전 입구 자리)
   wall('x', D, 0, 1.74, HGT, 380);                   // 앞쪽 벽 (미디어월 왼쪽)
-  for (let i = 0; i < N(500); i++) { const z = 0.45 + rnd() * 0.75; add(0, 2.2 + rnd() * 0.04, z, 0.9); }   // 입구 문틀
-  for (let i = 0; i < N(500); i++) { const y = rnd() * 2.2; add(0, y, rnd() < 0.5 ? 0.45 : 1.2, 0.9); }
-  // --- 커튼 ---
-  curtain('z', 0.18, 2.15, 6.82, HGT, 1300);         // 왼쪽 커튼
+  // --- 커튼 --- 왼쪽 커튼은 처음엔 닫혀 있고, 카메라가 입구 앞에 오면 가운데(ENTZ)가 양옆으로 걷히며 열림 (셰이더 uOpen)
+  const ENTZ = 4.11;
+  curtain('z', 0.18, 2.11, 6.82, HGT, 1300);         // 왼쪽 커튼
   curtain('x', 6.75, 6.54, W, HGT, 1300);            // 오른쪽 아래 커튼 (미디어월 옆)
   // --- 뒤쪽 계단석 (2단, 뒤가 더 높음) ---
   box(0.81, W, 0, 0.84, 0, 0.66, 900, 0.42, WOOD);
   box(1.01, W, 0, 0.42, 0.66, 1.3, 900, 0.42, WOOD);
-  // (방석 없음 — 계단석은 화면만 띄워 두는 자리)
-  // 계단석 위 화면: 웹사이트, 메이킹 필름
-  screen(2.45, 3.67, 0.55, 1.25, 0.95, 0.9, WHITE);
-  box(3.0, 3.12, 0.42, 0.55, 0.9, 0.98, 1500, 0.3);
-  screen(5.35, 7.93, 0.6, 2.05, 0.92, 0.75, WHITE);
-  box(6.58, 6.7, 0.42, 0.6, 0.88, 0.96, 1500, 0.3);
-  // --- 굿즈 존 (입구 옆 긴 진열대 + 엽서) ---
-  box(0.29, 0.81, 0, 0.85, 0.05, 1.58, 1100, 0.45);
-  for (let i = 0; i < 7; i++) {
-    const z0 = 0.15 + i * 0.2;
-    box(0.5 + (i % 2) * 0.05, 0.51 + (i % 2) * 0.05, 0.86, 1.0, z0, z0 + 0.14, 5000, 0.45, i % 2 ? WHITE : WARM);
+  // (방석 없음 — 계단석은 앉아서 앞의 스탠바이미로 메이킹 필름을 보는 자리)
+  // --- 메이킹 필름: 계단석 앞 바닥에 선 스탠바이미 (이동식 TV 스탠드), 화면은 계단석 쪽(-z)을 바라봄 ---
+  {
+    const CX = 6.0, CZ = 2.45, SW = 1.1, SH = 0.64, SY = 0.95 + FUP;   // 화면 가운데 x, 위치 z, 너비·높이, 화면 아래 높이 (나무 바닥 단 위)
+    box(CX - SW / 2, CX + SW / 2, SY, SY + SH, CZ, CZ + 0.04, 7000, 0.3, WHITE, {
+      ax: 'z', f: CZ, col: WHITE, b: (a, c) => 0.7 * (0.55 + 0.45 * (0.5 + 0.5 * Math.sin(a * 7 + c * 5) * Math.sin(c * 9 - a * 2))),
+    });
+    box(CX - 0.025, CX + 0.025, FUP + 0.06, SY + 0.1, CZ + 0.04, CZ + 0.09, 3000, 0.22);   // 세로 기둥
+    for (let i = 0; i < N(1600); i++) {                                                     // 바닥 받침 (둥근 판)
+      const a = rnd() * 6.283, r = Math.sqrt(rnd()) * 0.28;
+      add(CX + Math.cos(a) * r, FUP + 0.05, CZ + 0.065 + Math.sin(a) * r, r > 0.26 ? 0.6 : 0.3);
+    }
+  }
+  // --- 굿즈 / 웹 테이블: 배치도대로 나무 바닥(단) 위, 가벽 끝 앞쪽. 왼쪽에 모니터(웹), 오른쪽에 굿즈 ---
+  // (입구에서 들어와 단 위에 서서 보는 곳이라 계단석 쪽으로 조금 물려 둠)
+  const GX0 = 0.89, GX1 = 2.45, GZ0 = 1.55, GZ1 = 2.29, GTOP = FUP + 0.85;
+  box(GX0, GX1, FUP, GTOP, GZ0, GZ1, 1100, 0.45);
+  for (let i = 0; i < 4; i++) {                                      // 엽서·굿즈 (테이블 오른쪽 절반)
+    const x0 = 1.78 + i * 0.15;
+    box(x0, x0 + 0.1, GTOP + 0.01, GTOP + 0.15, GZ0 + 0.3 + (i % 2) * 0.06, GZ0 + 0.31 + (i % 2) * 0.06, 5000, 0.45, i % 2 ? WHITE : WARM);
+  }
+  // 웹사이트: 테이블 왼쪽 뒤편 모니터 (화면은 입구·방 안쪽 +z를 바라봄)
+  {
+    const X0 = 1.0, X1 = 1.5, Z = GZ0 + 0.22, Y0 = GTOP + 0.18, Y1 = GTOP + 0.5;
+    box(X0, X1, Y0, Y1, Z - 0.03, Z, 7000, 0.3, WHITE, {
+      ax: 'z', f: Z, col: WHITE, b: (a, c) => 0.75 * (0.55 + 0.45 * (0.5 + 0.5 * Math.sin(a * 9 + c * 5) * Math.sin(c * 11 - a * 3))),
+    });
+    box(X0, X1, Y0 - 0.06, Y0, Z - 0.03, Z, 1600, 0.5);                                  // 화면 아래 턱
+    const MX = (X0 + X1) / 2;
+    box(MX - 0.02, MX + 0.02, GTOP + 0.01, Y0 - 0.06, Z - 0.11, Z - 0.07, 4000, 0.4);   // 받침 목
+    box(MX - 0.08, MX + 0.08, GTOP, GTOP + 0.02, Z - 0.17, Z - 0.01, 4000, 0.4);        // 받침 발
   }
   // --- 체험대 (검은 천 테이블 + 이끼 + 곡선 스탠드 조명) ---
   {
-    const X0 = 3.48, X1 = 4.97, Z0 = 4.79, Z1 = 5.59, TOP = 0.9;
-    const side = (n, f) => { for (let i = 0; i < N(n); i++) f(rnd(), rnd()); };
-    side(3000, (u, v) => { const x = X0 + u * (X1 - X0), y = v * TOP; add(x, y, Z0 - 0.03 * (1 - v) - Math.sin(x * 40) * 0.015 * (1 - v), 0.24 + 0.2 * (0.5 + 0.5 * Math.sin(x * 40))); });
-    side(2400, (u, v) => { const x = X0 + u * (X1 - X0), y = v * TOP; add(x, y, Z1 + 0.03 * (1 - v), 0.18); });
-    side(600, (u, v) => { const z = Z0 + u * (Z1 - Z0), y = v * TOP; add(X0 - 0.03 * (1 - v), y, z, 0.12); });
-    side(600, (u, v) => { const z = Z0 + u * (Z1 - Z0), y = v * TOP; add(X1 + 0.03 * (1 - v), y, z, 0.12); });
-    for (let i = 0; i < N(2600); i++) add(X0 + rnd() * (X1 - X0), TOP, Z0 + rnd() * (Z1 - Z0), 0.3);   // 체험대 윗면
-    // 테이블 뒤쪽 왼편에서 올라와 체험대 위로 굽은 스탠드
-    for (let i = 0; i < N(1600); i++) {
-      const t = rnd(), a = t * Math.PI * 0.9;
-      add(X0 + 0.12 + (1 - Math.cos(a)) * 0.36 + (rnd() - 0.5) * 0.015, TOP + Math.sin(a) * 0.55 + t * 0.25, Z1 - 0.15 + (rnd() - 0.5) * 0.015, 0.35);
+    // 나무 단 바깥 바닥에 놓이고, 뒤쪽 면이 단차 모서리(WZ1)에 딱 맞닿음 (단 위로 올라오지 않음)
+    const X0 = 3.48, X1 = 4.97, Z0 = WZ1 + 0.03, Z1 = WZ1 + 0.83, TOP = 0.9;
+    // 실제 체험대(사진 DSC03607) 구성: 검은 천을 덮은 테이블 + 위에 이끼 매트 + 유목 두 덩이 + 고사리 잎
+    // 검은 천: 윗면은 어둡게, 모서리 테두리는 밝게, 옆면은 세로 주름이 늘어지고 바닥에서 살짝 퍼짐
+    {
+      const drape = (n, f) => { for (let i = 0; i < N(n); i++) f(rnd(), rnd()); };
+      const fold = (a) => (0.5 + 0.5 * Math.sin(a * 23 + Math.sin(a * 7) * 1.4)) ** 2;
+      drape(3400, (u, v) => { const x = X0 + u * (X1 - X0), y = v * TOP, f = fold(x); add(x, y, Z0 - 0.025 * (1 - v) - f * 0.02 * (1 - v), 0.1 + 0.22 * f + (v > 0.97 ? 0.35 : 0)); });
+      drape(2400, (u, v) => { const x = X0 + u * (X1 - X0), y = v * TOP, f = fold(x + 3); add(x, y, Z1 + 0.025 * (1 - v) + f * 0.02 * (1 - v), 0.08 + 0.16 * f + (v > 0.97 ? 0.3 : 0)); });
+      drape(1200, (u, v) => { const z = Z0 + u * (Z1 - Z0), y = v * TOP, f = fold(z * 1.3); add(X0 - 0.025 * (1 - v) - f * 0.02 * (1 - v), y, z, 0.08 + 0.18 * f + (v > 0.97 ? 0.3 : 0)); });
+      drape(1200, (u, v) => { const z = Z0 + u * (Z1 - Z0), y = v * TOP, f = fold(z * 1.3 + 2); add(X1 + 0.025 * (1 - v) + f * 0.02 * (1 - v), y, z, 0.08 + 0.18 * f + (v > 0.97 ? 0.3 : 0)); });
+      for (let i = 0; i < N(1800); i++) add(X0 + rnd() * (X1 - X0), TOP, Z0 + rnd() * (Z1 - Z0), 0.1);   // 천 윗면
     }
-    for (let i = 0; i < N(1400); i++) {
-      const a = rnd() * 6.283, r = Math.sqrt(rnd());
-      add(X0 + 0.82 + Math.cos(a) * r * 0.18, TOP + 0.43, Z1 - 0.17 + Math.sin(a) * r * 0.07, 1.4, WARM);
+    // 이끼 매트 (포인트 컬러): 몽글몽글한 이끼 덩이들이 모여 봉긋한 매트를 이루고, 위로 짧은 풀잎이 삐죽삐죽
+    {
+      const MX0 = X0 + 0.1, MX1 = X1 - 0.08, MZ0 = Z0 + 0.07, MZ1 = Z1 - 0.05;
+      const cx = (MX0 + MX1) / 2, cz = (MZ0 + MZ1) / 2, hx = (MX1 - MX0) / 2, hz = (MZ1 - MZ0) / 2;
+      const edge = (a) => 1 - 0.07 * (0.5 + 0.5 * Math.sin(a * 5 + 1)) - 0.05 * (0.5 + 0.5 * Math.sin(a * 13 + 2));
+      const inMat = (x, z) => {   // 가장자리가 울퉁불퉁한 둥근 사각형
+        const u = (x - cx) / hx, w = (z - cz) / hz;
+        return u ** 4 + w ** 4 < edge(Math.atan2(w, u)) ** 4;
+      };
+      const pick = () => { for (;;) { const x = MX0 + rnd() * (MX1 - MX0), z = MZ0 + rnd() * (MZ1 - MZ0); if (inMat(x, z)) return [x, z]; } };
+      const BASE = TOP + 0.04;
+      // 이끼 덩이: 반구 모양 (꼭대기는 밝고 가장자리·틈은 어둡게 → 덩어리 윤곽이 보임)
+      for (let c = 0; c < 170; c++) {
+        const [ccx, ccz] = pick(), R = 0.035 + rnd() * 0.045, n = N(Math.round(R * R * 9000));
+        for (let i = 0; i < n; i++) {
+          const a = rnd() * 6.283, d = Math.sqrt(rnd()) * R;
+          const x = ccx + Math.cos(a) * d, z = ccz + Math.sin(a) * d;
+          if (!inMat(x, z)) continue;
+          const k = Math.sqrt(Math.max(0, 1 - (d / R) ** 2));
+          add(x, BASE + k * R * 0.9 + (rnd() - 0.5) * 0.006, z, 0.03 + 0.08 * k + rnd() * 0.03, ACC);
+        }
+      }
+      // 풀잎: 덤불(포기)마다 3~7cm 잎 여러 가닥이 바깥으로 휘며 뻗음 — 뿌리는 어둡고 잎끝만 밝아 한 가닥씩 보임
+      for (let c = 0; c < N(260); c++) {
+        const [tx, tz] = pick(), blades = 5 + Math.floor(rnd() * 7);
+        for (let b = 0; b < blades; b++) {
+          const hgt = 0.03 + rnd() * 0.045, la = rnd() * 6.283, lean = 0.35 + rnd() * 0.6;
+          const ox = tx + (rnd() - 0.5) * 0.02, oz = tz + (rnd() - 0.5) * 0.02, y0 = BASE + 0.02 + rnd() * 0.02;
+          for (let s = 0; s < 9; s++) {
+            const t = s / 8;
+            add(ox + Math.cos(la) * lean * hgt * t * t, y0 + hgt * (t - 0.25 * lean * t * t), oz + Math.sin(la) * lean * hgt * t * t, 0.03 + 0.11 * t * t, ACC);
+          }
+        }
+      }
+      // 매트 옆면 (테이블 위에 얹힌 두께)
+      for (let i = 0; i < N(1800); i++) {
+        const a = rnd() * 6.283, e = edge(a), c = Math.cos(a), s = Math.sin(a);
+        const r = e / Math.pow(c ** 4 + s ** 4, 0.25);
+        add(cx + c * r * hx, TOP + rnd() * 0.06, cz + s * r * hz, 0.06 + rnd() * 0.05, ACC);
+      }
+    }
+    // 유목 두 덩이 (앞 왼쪽은 크고, 뒤 오른쪽은 길게) — 나무껍질 결을 따라 밝기 차이
+    {
+      const log = (x0, z0, len, r, ang, n) => {
+        const dx = Math.cos(ang), dz = Math.sin(ang);
+        for (let i = 0; i < N(n); i++) {
+          const t = rnd(), th = rnd() * Math.PI;                 // 윗반원만 (아래는 이끼에 묻힘)
+          const rr = r * (0.75 + 0.25 * Math.sin(t * 9)) * (1 - 0.35 * Math.abs(t - 0.5));
+          const px = x0 + dx * t * len - dz * Math.cos(th) * rr, pz = z0 + dz * t * len + dx * Math.cos(th) * rr;
+          const bark = 0.5 + 0.5 * Math.sin(t * len * 60 + th * 3);
+          add(px, TOP + 0.07 + Math.sin(th) * rr, pz, 0.05 + 0.13 * bark, WHITE);
+        }
+      };
+      log(X0 + 0.32, Z0 + 0.3, 0.42, 0.075, -0.15, 1500);
+      log(X0 + 0.82, Z0 + 0.62, 0.5, 0.06, 0.12, 1300);
+    }
+    // 스탠드 조명: 뒤쪽 가운데 클램프에서 구스넥이 부드럽게 올라와 앞으로 숙이고,
+    // 끝에 얇은 직사각형 조명 바(62cm, 가운데 힌지)가 가로로 달림 — 아랫면이 빛남
+    {
+      const MX = (X0 + X1) / 2, BW = 0.62, HY = TOP + 0.5, HZ = Z1 - 0.24;
+      // 클램프
+      box(MX - 0.03, MX + 0.03, TOP, TOP + 0.05, Z1 - 0.08, Z1 - 0.02, 2500, 0.08);
+      // 구스넥 (3차 베지어: 클램프 → 위로 → 앞으로 숙여 힌지)
+      const P = [[MX, TOP + 0.05, Z1 - 0.05], [MX, TOP + 0.42, Z1 - 0.05], [MX, HY + 0.06, Z1 - 0.1], [MX, HY + 0.02, HZ + 0.03]];
+      for (let i = 0; i < N(700); i++) {
+        const t = rnd(), s = 1 - t;
+        const b = [s * s * s, 3 * s * s * t, 3 * s * t * t, t * t * t];
+        const q = [0, 1, 2].map((k) => b[0] * P[0][k] + b[1] * P[1][k] + b[2] * P[2][k] + b[3] * P[3][k]);
+        const a = rnd() * 6.283;
+        add(q[0] + Math.cos(a) * 0.009, q[1] + Math.sin(a) * 0.009, q[2], 0.09);
+      }
+      // 조명 바 몸체 (가로 62 × 높이 2.2 × 깊이 2.6cm 직사각형)
+      // (작은 면에 입자가 몰리면 더해져서 하얗게 뭉치므로 개수를 적게)
+      box(MX - BW / 2, MX + BW / 2, HY - 0.011, HY + 0.011, HZ - 0.013, HZ + 0.013, 5000, 0.07);
+      // 가운데 힌지 블록
+      box(MX - 0.045, MX + 0.045, HY - 0.016, HY + 0.02, HZ - 0.02, HZ + 0.02, 1500, 0.08);
+      // 아랫면 발광 띠 (양 끝 캡 제외) — 은은하게
+      for (let i = 0; i < N(260); i++) add(MX + (rnd() - 0.5) * (BW - 0.04), HY - 0.012, HZ + (rnd() - 0.5) * 0.018, 0.35, WARM);
+      // 테이블 위로 떨어지는 빛 (바 아래가 가장 밝고 앞으로 갈수록 옅게)
+      for (let i = 0; i < N(2600); i++) {
+        const x = MX + (rnd() - 0.5) * (BW + 0.3), z = HZ + 0.12 - rnd() * 0.62;
+        const kx = 1 - Math.abs(x - MX) / ((BW + 0.3) / 2), kz = 1 - Math.abs(z - HZ) / 0.5;
+        add(x, TOP + 0.003, z, 0.08 + 0.25 * Math.max(0, kx) * Math.max(0, kz), WARM);
+      }
     }
   }
   // --- 미디어월 (LED 4.8 × 2.7m) ---
@@ -178,7 +280,7 @@
   layout(location=1) in vec4 aCol;          // rgb(밝기 포함), seed
   layout(location=2) in vec2 aK;            // 종류, 커튼 방향 좌표
   uniform mat4 uVP;
-  uniform float uA, uTime, uPx, uGain;
+  uniform float uA, uTime, uPx, uGain, uOpen, uEnt;
   out vec3 vCol;
   float h(float x){ return fract(sin(x * 91.345 + 47.853) * 43758.5453); }
   void main(){
@@ -197,6 +299,12 @@
       float wave = (sin(al * 1.7 + y * .55 - uTime * .42) * .055 + sin(al * .6 - uTime * .27 + y * .3) * .04) * smoothstep(0., .6, y);
       p += (aK.x < 1.5 ? vec3(0., 0., 1.) : vec3(1., 0., 0.)) * wave;
       sheen = pow(.5 + .5 * sin(al * 2.3 + y * .4 - uTime * .55), 10.) * 1.3;
+      // 입구: 왼쪽 커튼 가운데가 양옆으로 걷힘 (가운데일수록 많이, 1.2m 밖은 그대로) → 약 0.85m 틈
+      if (aK.x > 1.5) {
+        float d = al - uEnt, k = max(0., 1. - abs(d) / 1.2);
+        p.z += sign(d) * uOpen * .42 * k;
+        p.x += uOpen * .06 * k;                 // 걷힌 자락이 살짝 안쪽으로 몰림
+      }
     }
     // 모든 입자가 아주 느리게 흐르듯 떠 있음
     p += vec3(sin(uTime*.35 + aPos.y*2.1 + s*6.), sin(uTime*.3 + aPos.x*1.7 + s*9.), cos(uTime*.33 + aPos.z*1.9 + s*4.)) * .008;
@@ -227,7 +335,7 @@
   gl.linkProgram(prog);
   gl.useProgram(prog);
   const U = (n) => gl.getUniformLocation(prog, n);
-  const uVP = U('uVP'), uA = U('uA'), uTime = U('uTime'), uPx = U('uPx'), uGain = U('uGain');
+  const uVP = U('uVP'), uA = U('uA'), uTime = U('uTime'), uPx = U('uPx'), uGain = U('uGain'), uOpen = U('uOpen'), uEnt = U('uEnt');
   const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
   const buf = (data, loc, size) => {
     const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b);
@@ -243,15 +351,18 @@
   // 이웃한 지점끼리 바라보는 방향 차이를 작게(대부분 60° 안팎) 잡고,
   // 아래 LEN 계산에서 회전에 큰 비중을 줘서 고개를 돌리는 구간은 스크롤을 더 많이 써서 천천히 돌아감
   // spot: 왼쪽 설명에서 밝아질 항목 (1 입구·굿즈, 2 웹사이트, 3 메이킹 필름, 4 체험)
+  // 실제 관람 동선: 위에서 내려다봄 → 커튼 밖 → 커튼 가운데를 열고 들어옴(둥근 나무 단이 보임)
+  //               → 굿즈 / 웹 테이블 → 계단석에 앉아 스탠바이미(메이킹 필름) → 미디어월 · 체험대
   const PATH = [
     { pos: [4.3, 8.6, 8.4], at: [4.3, 0, 3.4], fov: 46 },                          // 위에서 내려다봄
-    { pos: [2.7, 1.9, 3.5], at: [0.6, 0.9, 1.0], fov: 60, spot: 1 },               // 입구 · 굿즈 존
-    { pos: [3.4, 1.85, 4.0], at: [3.0, 1.0, 0.9], fov: 60, spot: 2 },              // 웹사이트
-    { pos: [6.0, 1.85, 4.2], at: [6.6, 1.0, 0.9], fov: 60, spot: 3 },              // 메이킹 필름
-    { pos: [7.5, 1.9, 3.3], at: [4.8, 1.0, 2.6], fov: 60 },                        // 오른쪽에서 천천히 고개를 돌림
-    { pos: [7.2, 1.95, 3.0], at: [4.4, 0.9, 5.9], fov: 60, spot: 4 },              // 체험대 · 미디어월 (비스듬히)
-    { pos: [3.0, 1.95, 3.6], at: [0.4, 1.2, 1.2], fov: 60 },                       // 입구로 돌아감
-    { pos: [4.3, 8.6, 8.4], at: [4.3, 0, 3.4], fov: 46 },
+    { pos: [-2.4, 1.6, ENTZ], at: [1.5, 1.1, ENTZ - 0.3], fov: 60, spot: 1 },      // 커튼 밖 — 닫힌 커튼이 열림 (입구)
+    { pos: [0.35, 1.6, ENTZ], at: [2.2, 0.7, 3.0], fov: 60, spot: 1 },             // 커튼을 지나 안으로 — 둥근 나무 단
+    { pos: [1.9, 1.7, 3.75], at: [1.7, 1.0, 1.9], fov: 60, spot: 2 },              // 단 위에 서서 굿즈 / 웹 테이블 (여기서 바로 계단석으로)
+    { pos: [3.9, 1.7, 3.3], at: [6.0, 1.25, 1.3], fov: 60 },                       // 계단석 쪽으로 걸어감
+    { pos: [6.0, 1.25, 1.0], at: [6.0, 1.32, 2.45], fov: 60, spot: 3 },            // 계단석에 앉아 스탠바이미로 메이킹 필름
+    { pos: [5.7, 1.6, 3.4], at: [4.3, 1.3, 6.2], fov: 60 },                        // 미디어월 쪽으로
+    { pos: [4.2, 1.7, 3.15], at: [4.2, 1.0, 6.6], fov: 60, spot: 4 },              // 단 위에 서서 체험대 · 미디어월
+    { pos: [4.2, 1.9, 2.6], at: [4.2, 1.15, 6.6], fov: 62 },                       // 한 걸음 물러나 미디어월 전체
   ];
   const SEG = PATH.length - 1;
   const smooth = (t) => t * t * t * (t * (t * 6 - 15) + 10);
@@ -321,7 +432,7 @@
   const items = [...sec.querySelectorAll('.space3d__spot')];
   let shown = -1;
   // 스팟을 누르면 그 위치까지 천천히 스크롤
-  const SPOT_U = { 1: 1, 2: 2, 3: 3, 4: 5 };   // PATH 안의 지점 번호
+  const SPOT_U = { 1: 1, 2: 3, 3: 5, 4: 7 };   // PATH 안의 지점 번호
   let scrollAnim = 0;
   function goSpot(n) {
     const r = sec.getBoundingClientRect();
@@ -385,6 +496,10 @@
     gl.uniform1f(uTime, time);
     gl.uniform1f(uPx, (MOBILE ? 11 : 14) * dpr * (CH / dpr / 900) * (60 / cam.fov));
     gl.uniform1f(uGain, 3.0);
+    // 커튼: 위에서 볼 때·입구 밖에 설 때는 닫힘 → 입구로 다가가며(PATH 1→2) 열림, 지나간 뒤엔 열린 채
+    const ot = Math.min(1, Math.max(0, (cam.u - 1.12) / 0.55));
+    gl.uniform1f(uOpen, ot * ot * (3 - 2 * ot));
+    gl.uniform1f(uEnt, ENTZ);
     gl.drawArrays(gl.POINTS, 0, COUNT);
     ui(cam.u);
     if (visible) raf = requestAnimationFrame(frame);

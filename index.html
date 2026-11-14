@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" />
   <!-- 첫 화면 FEELD 이탤릭 세리프 -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400&display=swap" />
-  <link rel="stylesheet" href="css/style.css?v=62" />
+  <link rel="stylesheet" href="css/style.css?v=65" />
   <link rel="preload" href="assets/splat/forest-gs.bin" as="fetch" crossorigin />
 </head>
 <body>
@@ -274,12 +274,12 @@
       <div class="space3d__sticky">
         <div class="space3d__copy">
           <p class="split__label">EXHIBITION SPACE</p>
-          <h2 id="space-title" class="space3d__title">숲으로 들어가는<br />하나의 방</h2>
+          <h2 id="space-title" class="space3d__title">숲으로 들어가는<br />FEELD의 전시공간</h2>
           <ol class="space3d__spots">
-            <li class="space3d__spot" data-spot="1" role="button" tabindex="0"><span>01</span><div><b>입구 · 굿즈 ZONE</b><p>들어오자마자 기록한 숲을 담은 엽서와 굿즈를 만나요. 나가는 길도 이곳이에요.</p></div></li>
-            <li class="space3d__spot" data-spot="2" role="button" tabindex="0"><span>02</span><div><b>웹사이트</b><p>계단석에 놓인 화면에서 FEELD를 둘러보고, 나만의 엽서를 만들어요.</p></div></li>
-            <li class="space3d__spot" data-spot="3" role="button" tabindex="0"><span>03</span><div><b>메이킹 필름</b><p>메이킹 필름을 보며, 숲을 걷고 기록해 FEELD를 만들기까지의 작업 과정을 살펴봐요.</p></div></li>
-            <li class="space3d__spot" data-spot="4" role="button" tabindex="0"><span>04</span><div><b>체험 ZONE</b><p>미디어월 앞 체험대에 손을 얹으면, 손을 따라 숲이 깨어나요.</p></div></li>
+            <li class="space3d__spot" data-spot="1" role="button" tabindex="0"><span>1</span><div><b>입구 / 출구</b><p>커튼을 열고 숲으로 들어가요. 나가는 길도 이곳이에요.</p></div></li>
+            <li class="space3d__spot" data-spot="2" role="button" tabindex="0"><span>2</span><div><b>굿즈 ZONE 및 FEELD WEB</b><p>단 위 테이블에서 기록한 숲을 담은 엽서와 굿즈를 보고, 모니터로 FEELD 웹사이트를 둘러보며 나만의 엽서를 만들어요.</p></div></li>
+            <li class="space3d__spot" data-spot="3" role="button" tabindex="0"><span>3</span><div><b>메이킹 필름</b><p>계단석에 앉아 메이킹 필름을 관람하며, 숲을 걷고 기록해 FEELD를 만들기까지의 과정을 살펴봐요.</p></div></li>
+            <li class="space3d__spot" data-spot="4" role="button" tabindex="0"><span>4</span><div><b>체험 ZONE</b><p>미디어월 앞 체험대에 손을 얹으면, 손을 따라 숲이 깨어나요.</p></div></li>
           </ol>
         </div>
         <div class="space3d__view">
@@ -370,20 +370,10 @@
       </div>
     </section>
 
-    <!-- 08. EXHIBITION (풀배경) -->
-    <section class="about bleed bleed--path" aria-labelledby="visit-title">
-      <div class="about__bg" aria-hidden="true"><img src="assets/img/sec-path.jpg" alt="" /></div>
-      <div class="about__inner">
-        <p class="about__label reveal">EXHIBITION</p>
-        <h2 id="visit-title" class="about__title reveal-lines">
-          <span class="line"><span>저희가 걸은 숲길을,</span></span>
-          <span class="line"><span>당신의 손으로 걸어 보세요.</span></span>
-        </h2>
-        <div class="visit__info">
-          <div class="reveal" style="--d:.3s"><small>일정</small><p>2026. 11. 20 (금) → 11. 22 (일)</p></div>
-          <div class="reveal" style="--d:.45s"><small>장소</small><p>계원예술대학교 디자인관 5층 크리에이티브 스튜디오</p></div>
-        </div>
-      </div>
+    <!-- 08. 마무리 문구 — 시안: 입자 숲 사진(assets/img/walk-forest.webp)을 옅게 깔고 위아래는 바탕색으로, 가운데 한 줄 -->
+    <section class="walkfx" aria-label="마무리 문구">
+      <div class="walkfx__bg" aria-hidden="true"><img src="assets/img/walk-forest.webp" alt="" loading="lazy" /></div>
+      <p class="walkfx__text reveal">손끝에 남은 숲의 감촉이, 오래 머물기를.</p>
     </section>
 
   </main>
@@ -429,7 +419,7 @@
   <!-- <script src="js/process-ring.js?v=6"></script>  (회전 갤러리 보관 중) -->
   <script src="js/journey.js?v=4"></script>
   <script src="js/forest-story.js?v=7"></script>
-  <script src="js/space3d.js?v=20"></script>
+  <script src="js/space3d.js?v=40"></script>
   <script src="js/postcard.js?v=7"></script>
   <script src="js/foot-particles.js?v=10"></script>
   <!-- 3D 모델을 다시 쓰려면 아래 주석을 해제 (assets/model/driftwood.glb 교체 후)
