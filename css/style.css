@@ -649,44 +649,50 @@ main > section:not(.hero):not(.hero2) { margin-top: var(--sec-gap); }
 .plan__card.is-swap .plan__desc { opacity: 0; }
 .plan__desc { transition: opacity .3s; }
 
-/* 06 TEAM — 시안: 라벨 + 한 줄 제목, 아래에 7명 세로 사진 카드 */
-.team-sec { position: relative; padding: 8.5vw 7.9vw 9vw; text-align: center; }
-.team-sec .about__label { margin: 0; }
+/* 06 TEAM — 시안(팀소개.png, 1920 기준): 왼쪽 Team. / 잇다 IT-DA / 소개 2줄, 오른쪽 4열 사진 그리드 */
+.team-sec {
+  position: relative;
+  display: grid; grid-template-columns: 29.6vw 1fr; align-items: start;
+  padding: 10vw 3.75vw 8.5vw;
+  text-align: left;
+}
+.team-sec__eyebrow {
+  margin: 0;
+  font-size: max(18px, 1.56vw); font-weight: 400; letter-spacing: -0.01em; line-height: 1.2;
+  color: rgba(239, 241, 232, .55);
+}
 .team-sec__title {
-  margin: 1.5vw 0 0;
-  font-size: max(22px, 1.82vw); font-weight: 500; line-height: 1.32; letter-spacing: -0.02em;
+  margin: .45vw 0 0;
+  font-size: max(26px, 2.2vw); font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+  color: var(--accent);
+}
+.team-sec__desc {
+  margin: 3.4vw 0 0;
+  font-size: max(13px, 1vw); line-height: 1.7; letter-spacing: -0.01em;
+  color: var(--text);
 }
 .team__grid {
-  display: grid; grid-template-columns: repeat(7, 1fr); gap: 1.43vw;
-  margin-top: 14vw;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.9vw 2.08vw;
+  margin-top: 8.15vw;
 }
 .team__member { margin: 0; }
 .team__photo {
   position: relative;
-  aspect-ratio: 166 / 203;
-  background: #fff;
+  aspect-ratio: 272 / 364;
+  background: #d9d9d6;
   overflow: hidden;
 }
-/* 팀장 표시: 역할 글자에 붙이면 줄이 넘어가서, 사진 왼쪽 위 작은 태그로 */
-.team__lead {
-  position: absolute; left: .6vw; top: .6vw;
-  padding: .25vw .6vw;
-  border-radius: 99px;
-  background: var(--bg);
-  color: var(--accent);
-  font-size: max(10px, .68vw); letter-spacing: .04em; line-height: 1.4;
-}
-.team__member em { white-space: nowrap; }
 .team__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.team__member figcaption { margin-top: 1.4vw; }
-.team__member em { display: block; font-style: normal; font-size: max(12px, 1.04vw); color: var(--accent); }
-.team__member b { display: block; margin-top: .55vw; font-size: max(12px, .97vw); font-weight: 400; color: var(--text); }
+.team__member figcaption { margin-top: 1.55vw; }
+.team__member em { display: block; font-style: normal; white-space: nowrap; font-size: max(11px, .89vw); color: var(--accent); }
+.team__member b { display: block; margin-top: .25vw; font-size: max(13px, 1vw); font-weight: 500; color: var(--text); }
 @media (max-width: 768px) {
-  .team-sec { padding: 100px 20px 80px; }
-  .team-sec__title { margin-top: 14px; }
-  .team__grid { grid-template-columns: repeat(2, 1fr); gap: 28px 14px; margin-top: 48px; }
+  .team-sec { grid-template-columns: 1fr; padding: 100px 20px 80px; }
+  .team-sec__title { margin-top: 6px; }
+  .team-sec__desc { margin-top: 20px; }
+  .team__grid { grid-template-columns: repeat(2, 1fr); gap: 28px 14px; margin-top: 40px; }
   .team__member figcaption { margin-top: 10px; }
-  .team__member b { margin-top: 4px; }
+  .team__member b { margin-top: 3px; }
 }
 
 /* 06 TEAM 이전 버전 (지금은 쓰지 않음) */
@@ -1028,6 +1034,23 @@ main > section:not(.hero):not(.hero2) { margin-top: var(--sec-gap); }
 .post__bg { position: absolute; inset: 0; z-index: 0; }
 /* 초점이 엽서에 맞은 것처럼 배경 숲은 흐리고 조금 더 어둡게 (가장자리가 비치지 않게 살짝 확대) */
 .post__bg img { width: 100%; height: 100%; object-fit: cover; filter: blur(7px) brightness(.34) saturate(.8); transform: scale(1.06); }
+/* 엽서 만들기를 누르면 배경이 계단 숲길(영상 색보정 장면)로 천천히 바뀜 — 흐림 없이 선명하게 */
+.post__bg img.post__bg-make {
+  position: absolute; inset: 0;
+  filter: none; transform: scale(1.03);
+  opacity: 0;
+  transition: opacity 1.2s ease, transform 6s ease;
+}
+.post.is-making .post__bg img.post__bg-make { opacity: 1; transform: scale(1); }
+/* 만들기 중에는 배경을 한 톤 눌러서(아래쪽 고르는 칸 주변은 더 어둡게) 엽서·사진이 앞으로 나와 보이게 */
+.post__bg::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 38%, rgba(10,14,9,0) 0%, rgba(10,14,9,.35) 100%),
+    linear-gradient(to bottom, rgba(10,14,9,.15) 0%, rgba(10,14,9,.15) 55%, rgba(10,14,9,.62) 78%, rgba(10,14,9,.7) 100%);
+  opacity: 0; transition: opacity 1.2s ease;
+}
+.post.is-making .post__bg::before { opacity: 1; }
 .post__bg::after {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(to bottom, var(--bg) 0%, rgba(16,22,14,0) 10%, rgba(16,22,14,0) 90%, var(--bg) 100%);
@@ -1214,6 +1237,15 @@ textarea.pc__text { background: transparent; border: 0; outline: 0; resize: none
 .post__item:hover { opacity: .85; }
 .post__item.is-on { opacity: 1; transform: translateY(-6%); }
 .post__item img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* 사진 고르기: 숲 배경과 섞이지 않게 엽서 종이색 테두리 + 그림자로 인화한 사진처럼 띄움 */
+.post__photos .post__item {
+  opacity: .78;
+  border: calc(var(--u) * .28) solid #e4e0d3;
+  box-shadow: 0 calc(var(--u) * .5) calc(var(--u) * 1.4) rgba(0,0,0,.55);
+}
+.post__photos .post__item:hover { opacity: .95; }
+.post__photos .post__item.is-on { opacity: 1; box-shadow: 0 calc(var(--u) * .8) calc(var(--u) * 2) rgba(0,0,0,.65), 0 0 0 1px rgba(201,222,142,.9); }
+.post__stamps .post__item img { filter: drop-shadow(0 calc(var(--u) * .4) calc(var(--u) * .9) rgba(0,0,0,.55)); }
 .post__photos .post__item { width: calc(var(--u) * 12.4); aspect-ratio: 988 / 552; }
 .post__stamps .post__item { width: calc(var(--u) * 6.4); aspect-ratio: 150.61 / 187.99; }
 .post__stamps .post__item img { object-fit: contain; }

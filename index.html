@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" />
   <!-- 첫 화면 FEELD 이탤릭 세리프 -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400&display=swap" />
-  <link rel="stylesheet" href="css/style.css?v=56" />
+  <link rel="stylesheet" href="css/style.css?v=59" />
   <link rel="preload" href="assets/splat/forest-gs.bin" as="fetch" crossorigin />
 </head>
 <body>
@@ -289,37 +289,40 @@
       </div>
     </section>
 
-    <!-- 06. TEAM — 7명 (사진은 흰 박스 안에: assets/img/team/01~07.webp 넣고 img 주석 해제) -->
+    <!-- 06. TEAM — 시안: 왼쪽 Team. / 잇다 IT-DA / 소개 2줄, 오른쪽 4열 사진 (assets/img/team/01~07.webp) -->
     <section class="team-sec" aria-labelledby="team-title">
-      <p class="about__label reveal">TEAM. IT-DA</p>
-      <h2 id="team-title" class="team-sec__title reveal-lines"><span class="line"><span>자연과 사람을 잇습니다.</span></span></h2>
+      <div class="team-sec__head">
+        <p class="team-sec__eyebrow reveal">Team.</p>
+        <h2 id="team-title" class="team-sec__title reveal-lines"><span class="line"><span>잇다 IT-DA</span></span></h2>
+        <p class="team-sec__desc reveal" style="--d:0.1s">연년생처럼 끊임없이 이어진 팀입니다.<br />각자의 작업을 이어 전시를 만듭니다.</p>
+      </div>
       <div class="team__grid">
           <figure class="team__member reveal" style="--d:0.00s">
-            <div class="team__photo"><!-- <img src="assets/img/team/01.webp" alt="전영서" /> --><span class="team__lead">LEADER</span></div>
+            <div class="team__photo"><img src="assets/img/team/01.webp" alt="전영서" loading="lazy" /></div>
             <figcaption><em>PLANNER</em><b>전영서</b></figcaption>
           </figure>
           <figure class="team__member reveal" style="--d:0.07s">
-            <div class="team__photo"><!-- <img src="assets/img/team/02.webp" alt="손서윤" /> --></div>
+            <div class="team__photo"><img src="assets/img/team/02.webp" alt="손서윤" loading="lazy" /></div>
             <figcaption><em>PLANNER</em><b>손서윤</b></figcaption>
           </figure>
           <figure class="team__member reveal" style="--d:0.14s">
-            <div class="team__photo"><!-- <img src="assets/img/team/03.webp" alt="강민경" /> --></div>
+            <div class="team__photo"><img src="assets/img/team/03.webp" alt="강민경" loading="lazy" /></div>
             <figcaption><em>DESIGNER</em><b>강민경</b></figcaption>
           </figure>
           <figure class="team__member reveal" style="--d:0.21s">
-            <div class="team__photo"><!-- <img src="assets/img/team/04.webp" alt="이혜윤" /> --></div>
+            <div class="team__photo"><img src="assets/img/team/04.webp" alt="이혜윤" loading="lazy" /></div>
             <figcaption><em>DESIGNER</em><b>이혜윤</b></figcaption>
           </figure>
-          <figure class="team__member reveal" style="--d:0.28s">
-            <div class="team__photo"><!-- <img src="assets/img/team/05.webp" alt="고예범" /> --></div>
+          <figure class="team__member reveal" style="--d:0.00s">
+            <div class="team__photo"><img src="assets/img/team/05.webp" alt="고예범" loading="lazy" /></div>
             <figcaption><em>PROGRAMMER</em><b>고예범</b></figcaption>
           </figure>
-          <figure class="team__member reveal" style="--d:0.35s">
-            <div class="team__photo"><!-- <img src="assets/img/team/06.webp" alt="김다윤" /> --></div>
+          <figure class="team__member reveal" style="--d:0.07s">
+            <div class="team__photo"><img src="assets/img/team/06.webp" alt="김다윤" loading="lazy" /></div>
             <figcaption><em>PROGRAMMER</em><b>김다윤</b></figcaption>
           </figure>
-          <figure class="team__member reveal" style="--d:0.42s">
-            <div class="team__photo"><!-- <img src="assets/img/team/07.webp" alt="정혜진" /> --></div>
+          <figure class="team__member reveal" style="--d:0.14s">
+            <div class="team__photo"><img src="assets/img/team/07.webp" alt="정혜진" loading="lazy" /></div>
             <figcaption><em>PROGRAMMER</em><b>정혜진</b></figcaption>
           </figure>
       </div>
@@ -333,7 +336,7 @@
 
       </div>
       <div class="post">
-        <div class="post__bg" aria-hidden="true"><img src="assets/postcard/bg.webp" alt="" /></div>
+        <div class="post__bg" aria-hidden="true"><img src="assets/postcard/bg.webp" alt="" /><img class="post__bg-make" src="assets/postcard/bg-make.webp" alt="" /></div>
 
         <!-- A. 떠다니는 엽서들 -->
         <div class="post__float" aria-label="다른 사람들이 만든 엽서"></div>
