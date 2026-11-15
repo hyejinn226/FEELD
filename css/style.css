@@ -1336,7 +1336,6 @@ textarea.pc__text { background: transparent; border: 0; outline: 0; resize: none
   height: 100vh;
   z-index: 9999;
   pointer-events: none;
-  filter: blur(3px);
   display: none;
 }
 html.has-cursor .cursor { display: block; }

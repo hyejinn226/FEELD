@@ -179,7 +179,7 @@
     return getComputedStyle(b).pointerEvents !== 'none';
   };
   let hover = false, pressed = false;
-  const HOVER_SCALE = 1.7, PRESS_SCALE = 0.7;
+  const HOVER_SCALE = 1.3, PRESS_SCALE = 0.8;
   const retarget = () => { scaleTarget = (hover ? HOVER_SCALE : 1) * (pressed ? PRESS_SCALE : 1); };
   addEventListener('pointermove', (e) => {
     mouse.x = e.clientX; mouse.y = e.clientY;
@@ -211,35 +211,20 @@
 
     ctx.clearRect(0, 0, W, H);
     if (alpha > 0.01) {
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.lineCap = 'round';
-
-      // 짧은 꼬리: 머리에서 멀어질수록 가늘고 투명하게
-      const n = ghosts.length;
-      let a = head;
-      for (let i = 0; i < n; i++) {
-        const b = ghosts[i];
-        const k = 1 - i / n;                       // 1(머리 쪽) → 0(끝)
-        ctx.strokeStyle = `rgba(227,255,113,${CFG.trailAlpha * k * alpha})`;   // #E3FF71
-        ctx.lineWidth = CFG.radius * 1.6 * k * scale;
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.stroke();
-        a = b;
-      }
-
-      // 머리: 부드러운 원 (#E3FF71)
-      const r = CFG.radius * scale;
-      const g = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, r * 1.6);
-      g.addColorStop(0, `rgba(227,255,113,${CFG.headAlpha * alpha})`);
-      g.addColorStop(0.55, `rgba(227,255,113,${CFG.headAlpha * 0.75 * alpha})`);
-      g.addColorStop(1, 'rgba(227,255,113,0)');
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = g;
+      // 시안(Group 1.svg, 40×40)의 절반 크기(20×20): 가운데 꽉 찬 원(반지름 6.5) + 바깥 얇은 링(반지름 9.75, 1px), 모두 #E3FF71
+      // 원과 링은 항상 같은 중심으로 함께 움직임
+      const ring = head;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#E3FF71';
       ctx.beginPath();
-      ctx.arc(head.x, head.y, r * 1.6, 0, Math.PI * 2);
+      ctx.arc(head.x, head.y, 6.5 * scale, 0, Math.PI * 2);
       ctx.fill();
+      ctx.strokeStyle = '#E3FF71';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(ring.x, ring.y, 9.75 * scale, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
     }
     requestAnimationFrame(frame);
   };
