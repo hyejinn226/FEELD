@@ -1374,6 +1374,10 @@ html.is-loading, html.is-loading * { cursor: none !important; }
   padding: 4.7vw 3.9vw 3vw 3.75vw;
   background: #0B0F0A; border-top: 1px solid rgba(227, 255, 113, .3);
 }
+/* 배경: 첫 화면 이끼 사진을 흐리게 — 시안(1920×670) 기준 가로 꽉 차게(1920×1081), 사진 위쪽 321px(29.7%)는 잘려 올라감, 불투명도 20% */
+.foot__bg { position: absolute; left: 0; top: 0; width: 100%; z-index: 0; pointer-events: none; }
+.foot__bg img { display: block; width: 100%; height: auto; transform: translateY(-29.7%); opacity: .2; }
+.foot__cols, .foot__end { position: relative; z-index: 1; }
 .foot__cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2vw; }
 .foot__col small { display: block; margin-bottom: 1.8vw; font-size: max(12px, .94vw); font-weight: 600; line-height: 1.2; letter-spacing: .05em; color: #E3FF71; }
 .foot__col p { margin: 0 0 .9vw; font-size: max(12px, .83vw); line-height: 1.4; color: #EBEBEB; }
