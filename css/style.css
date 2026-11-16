@@ -38,19 +38,22 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
 html.is-loading, html.is-loading body { overflow: hidden; }
 .loader {
   position: fixed; inset: 0; z-index: 9000;
-  background: var(--bg);
+  background: #10160E;
   transition: opacity .9s var(--ease-out);
 }
 .loader__gl { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* 심볼 + 로고 묶음 — 위치·크기는 js/loader.js가 시안(1920×1080: 묶음 640×104, 가운데) 비율로 지정 */
 .loader__mark {
   position: absolute; left: 50%; top: 50%;
-  width: max(90px, 16vmin); height: auto;
-  transform: translate(-50%, -50%);
   opacity: 0;
+  transform-origin: 50% 50%;
   transition: transform 1s var(--ease-out);
 }
+/* 시안 기준: 심볼 x0 y0 w100 / 로고 x140 y11 w500 (묶음 640×104 안에서) */
+.loader__sym { position: absolute; left: 0; top: 0; width: 15.625%; height: auto; }
+.loader__word { position: absolute; left: 21.875%; top: 10.58%; width: 78.125%; height: auto; }
 .loader.is-out { opacity: 0; pointer-events: none; }
-.loader.is-out .loader__mark { transform: translate(-50%, -50%) scale(1.08); }
+.loader.is-out .loader__mark { transform: scale(1.08); }
 /* 로딩 중에는 첫 화면 배경 등장 효과를 멈춰 둠 */
 html.is-loading .hero2__bg img { animation-play-state: paused; }
 
@@ -74,41 +77,33 @@ html.is-loading .hero2__bg img { animation-play-state: paused; }
 }
 
 /* ---------- 01-B. Hero (화면 가득 이끼 가지 + FEELD) — 수치는 시안 1118×625 비율 기준 ---------- */
-.hero2 { position: relative; height: 100vh; min-height: 520px; overflow: hidden; }
-.hero2__bg { position: absolute; inset: 0; }
+/* 01-C. Hero — 시안(Frame 2147237908, 1920×1080): 바탕 #10160E 위에 숲 사진(가로 꽉, 세로 가운데),
+   그 위에 검정 81% 막 → 사진은 19% 밝기로 비침. 가운데에 제목·설명 (#EBEBEB) */
+/* 시작 화면은 .story(고정 화면)의 첫 장 — 스크롤하면 ABOUT 장으로 넘어감 (js/main.js 5번, .story.is-about) */
+.story__hero {
+  z-index: 2; padding: 0; background: #10160E;
+  transition: opacity 1.4s var(--ease-out) .15s;
+}
+.story.is-about .story__hero { opacity: 0; pointer-events: none; transition-delay: .1s; }
+/* 글: ABOUT→TECH 때처럼 위로 올라가며 흐려짐 / 배경: 살짝 확대되며 ABOUT 사진으로 바뀜 */
+.story__hero .hero2__copy { transition: transform 1.2s var(--ease-out), filter .9s; }
+.story.is-about .story__hero .hero2__copy { transform: translateY(calc(-50% - 9vh)); filter: blur(6px); }
+.story.is-about .story__hero .hero2__bg { transform: scale(1.06); }
+.hero2__bg { position: absolute; inset: 0; transition: transform 2.4s var(--ease-out); }
 .hero2__bg img {
   width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%;
   animation: hero2-in 6s var(--ease-out) both;
 }
 @keyframes hero2-in { from { transform: scale(1.06); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-/* 아래쪽은 다음 섹션 바탕색으로 서서히 */
-.hero2__bg::after {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(16,22,14,0) 72%, var(--bg) 100%);
+.hero2__bg::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .81); }
+/* 문구 위치: 제목 글자 윗선 y483 / 설명 1줄 y581, 2줄 y617 (1080 기준) — 묶음을 세로 가운데에 */
+.hero2__copy {
+  position: absolute; z-index: 1; left: 0; right: 0; top: calc(50% + 1.17vw);
+  transform: translateY(-50%);
+  text-align: center; color: #EBEBEB;
 }
-/* 위치·크기는 시안(1920×1080) 기준: 문구 x377 y668, 로고 x941 y746 w498, Feel the Field 오른쪽 끝 x1566 y855 */
-.hero2__sub, .hero2__tag {
-  position: absolute; z-index: 1; margin: 0;
-  font-weight: 300; letter-spacing: .01em; line-height: 1.25;
-  color: #EBEBEB;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, .35);
-}
-.hero2__sub { left: 19.6%; top: 61.4%; font-size: max(13px, 1.25vw); }
-.hero2__tag { right: 18.4%; top: 78.7%; font-size: max(15px, 1.67vw); }
-.hero2__title {
-  position: absolute; z-index: 1; margin: 0;
-  left: 49%; top: 69.1%;
-  width: max(180px, 25.94vw); line-height: 0;
-}
-.hero2__title img { display: block; width: 100%; height: auto; filter: drop-shadow(0 2px 24px rgba(0, 0, 0, .3)); }
-.hero2__sub p { margin: 0; }
-.hero2__ko { margin-top: .3em !important; font-size: .88em; font-weight: 400; letter-spacing: .02em; }
-@media (max-width: 768px) {
-  .hero2__bg img { object-position: 38% 50%; }
-  .hero2__sub { left: 20px; top: 46%; }
-  .hero2__title { left: auto; right: 20px; top: 56%; width: 52vw; }
-  .hero2__tag { right: 20px; top: 66%; }
-}
+.hero2__head { margin: 0; font-size: max(22px, 1.823vw); font-weight: 600; line-height: 1.2; }
+.hero2__desc { margin: 2.76vw 0 0; font-size: max(15px, 1.2vw); font-weight: 400; line-height: 1.565; }
 
 /* ---------- 01. Hero ---------- */
 .hero {
@@ -271,7 +266,7 @@ html.is-loading .hero2__bg img { animation-play-state: paused; }
 
 /* 섹션 사이 여백: 첫 화면(hero) 다음부터 모든 섹션 위에 같은 간격 (1920 기준 약 210px) */
 :root { --sec-gap: 11vw; }
-main > section:not(.hero):not(.hero2) { margin-top: var(--sec-gap); }
+main > section:not(.hero):not(.hero2):not(.story--intro):not(.tdetail):not(.exp):not(.arch) { margin-top: var(--sec-gap); }
 @media (max-width: 768px) { :root { --sec-gap: 96px; } }
 
 /* 03-0. NAME — FEELD 이름 소개 */
@@ -382,6 +377,233 @@ main > section:not(.hero):not(.hero2) { margin-top: var(--sec-gap); }
   transition-delay: 0s;
 }
 /* TECHNOLOGY: 아래에서 하나씩 차례로 올라옴 (세 번째 시안) */
+/* 시작 → ABOUT: ABOUT 글이 TECH 글처럼 차례로 떠오름 (.sa, --i 순서) */
+.story--intro { height: 380vh; }
+.story--intro .story__about { pointer-events: none; }
+.story--intro.is-about:not(.is-tech) .story__about { pointer-events: auto; }
+.sa {
+  opacity: 0; transform: translateY(6vh); filter: blur(4px);
+  transition: opacity .6s var(--ease-out), transform .8s var(--ease-out), filter .6s;
+}
+.story.is-about .sa {
+  opacity: 1; transform: none; filter: none;
+  transition: opacity 1s var(--ease-out), transform 1.3s var(--ease-out), filter 1s;
+  transition-delay: calc(.45s + var(--i, 0) * .13s);
+}
+/* TECH 화면 (시안 Frame 2147237921, 1920×1172)
+   배경: #10160E → 초록 천 사진(시안처럼 가로로 늘려 x-4.8 w1929.7 h1261.9) → #21302B 20% 어둡게(darken) → 검정 32%
+         → 가운데 타원 비네팅(가운데 검정 18% → 가장자리 #10160E) → 노이즈 */
+.story__techbg {
+  position: absolute; inset: 0; overflow: hidden; isolation: isolate;
+  background: #10160E;
+  opacity: 0; transition: opacity 1.2s var(--ease-out);
+}
+.story.is-tech .story__techbg { opacity: 1; }
+.story__techbg img {
+  position: absolute; left: -0.252%; top: 0; width: 100.504%; height: 107.67%; max-width: none;
+  object-fit: fill;
+}
+.story__techbg::before { content: ""; position: absolute; inset: 0; background: #21302B; opacity: .2; mix-blend-mode: darken; }
+.story__techbg::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    url(../assets/img/noise.svg) 0 0 / 300px 300px repeat,
+    radial-gradient(ellipse 42.627% 50% at 50% 50%, rgba(0, 0, 0, .18) 0%, #10160E 100%),
+    rgba(0, 0, 0, .32);
+}
+/* 글·버튼 위치: 시안 1920×1172 판을 화면 세로 가운데에 두고, 그 안에서 시안 좌표 그대로 (px ÷ 19.2 = vw) */
+.tech2 { position: absolute; left: 0; right: 0; top: 50%; height: 61.042vw; transform: translateY(-50%); text-align: center; }
+.tech2 > * { position: absolute; left: 0; right: 0; margin: 0; }
+.tech2__label { top: 19.625vw; font-size: 1.042vw; font-weight: 400; line-height: 1.2; color: #E3FF71; }
+.tech2__title { top: 23.734vw; font-size: 2.76vw; font-weight: 500; line-height: 1.234; color: #fff; }
+.tech2__body { top: 33.208vw; font-size: 1.0625vw; font-weight: 400; line-height: 1.75; color: #fff; }
+.tech2__more {
+  top: 47.396vw; left: 50%; right: auto; width: 2.917vw; height: 2.917vw; margin-left: -1.458vw;
+  padding: 0; border: 0; background: none; color: inherit; line-height: 0;
+  transition-property: opacity, transform, filter;
+}
+.tech2__more svg { width: 100%; height: 100%; }
+@media (max-width: 768px) {
+  .tech2 { height: auto; display: flex; flex-direction: column; align-items: center; padding: 0 20px; }
+  .tech2 > * { position: static; }
+  .tech2__label { font-size: 13px; }
+  .tech2__title { margin-top: 18px; font-size: 26px; }
+  .tech2__body { margin-top: 20px; font-size: 14px; line-height: 1.7; }
+  .tech2__body br { display: none; }
+  .tech2__more { margin: 36px 0 0; width: 48px; height: 48px; }
+}
+.tech2__more { cursor: pointer; }
+
+/* ---------- 03-1. TECH 상세 (시안 Frame 2147237922~24, js/tech-detail.js) ----------
+   1920×1080 판(--u = 1px@1920)을 화면 아래에 맞춰 두고, 시안 좌표 그대로 배치.
+   움직임은 JS가 장면마다 --a(나타남 0~1), --y(세로 이동) 등을 스크롤에 맞춰 넣어 줌 */
+.tdetail { position: relative; height: 520vh; background: #10160E; --u: calc(100vw / 1920); }
+.tdetail__sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #10160E; }
+.tdetail__stage { position: absolute; left: 0; bottom: 0; width: 100%; height: calc(1080 * var(--u)); }
+.td { position: absolute; inset: 0; visibility: hidden; }
+.td.is-on { visibility: visible; }
+.td img { position: absolute; display: block; max-width: none; }
+.td__clip { position: absolute; overflow: hidden; will-change: transform, opacity; }
+
+/* 1. SENSORY RECORDING — 같은 사진을 두 군데 잘라 씀: 카메라(x893 y212 279×671), 마이크(x1270 y454 484×626) */
+.td__cam { left: calc(893 * var(--u)); top: calc(212 * var(--u)); width: calc(279 * var(--u)); height: calc(671 * var(--u)); }
+.td__cam img { left: calc(-158.2 * var(--u)); top: calc(-0.3 * var(--u)); width: calc(1021.9 * var(--u)); height: calc(671.5 * var(--u)); }
+.td__mic { left: calc(1270 * var(--u)); top: calc(454 * var(--u)); width: calc(484 * var(--u)); height: calc(626 * var(--u)); }
+.td__mic img { left: calc(-460.5 * var(--u)); top: calc(-45.1 * var(--u)); width: calc(1021.4 * var(--u)); height: calc(671.4 * var(--u)); }
+
+/* 2. PARTICLE OF NATURE — 좌우 반전된 숲(0~1448, y-34) + 오른쪽 끝 늘린 띠(1309~1526) + 타원 그늘 */
+.td__forest, .td__strip { position: absolute; overflow: hidden; transform: scaleX(-1); }
+.td__forest { left: 0; top: calc(-34 * var(--u)); width: calc(1448 * var(--u)); height: calc(1128 * var(--u)); }
+.td__forest .td__dots { left: 0; top: calc(-503.7 * var(--u)); width: calc(1448 * var(--u)); height: calc(2046 * var(--u)); }
+.td__forest::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(16, 22, 14,.56) 1.514%, rgba(16, 22, 14,0) 38.9%, rgba(16, 22, 14,0) 68.31%, #10160E 100%);
+}
+.td__strip { left: calc(1309 * var(--u)); top: calc(-96 * var(--u)); width: calc(217 * var(--u)); height: calc(1222 * var(--u)); }
+.td__strip .td__dots { left: calc(0.34 * var(--u)); top: calc(-398 * var(--u)); width: calc(1303.6 * var(--u)); height: calc(1843.7 * var(--u)); }
+.td__strip::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to left, rgba(16, 22, 14,.56), #10160E); }
+.td__vig {
+  position: absolute; left: 0; top: calc(-27 * var(--u)); width: calc(1688 * var(--u)); height: calc(1114 * var(--u));
+  background: radial-gradient(calc(716.936 * var(--u)) calc(525.131 * var(--u)) at calc(763.31 * var(--u)) calc(557 * var(--u)),
+    rgba(16, 22, 14,.15) 0%, rgba(16, 22, 14,.59) 99.5444%);
+}
+
+/* 3. RECONNECTING TOUCH — 체험대 사진(x549 y92 1295×988 안에서 x462.6 y40.1 1689.5×1125.8) */
+.td__moss { left: calc(549 * var(--u)); top: calc(92 * var(--u)); width: calc(1295 * var(--u)); height: calc(988 * var(--u)); }
+.td__moss img { left: calc(-86.4 * var(--u)); top: calc(-51.9 * var(--u)); width: calc(1689.5 * var(--u)); height: calc(1125.8 * var(--u)); }
+
+/* 글: 라벨 28px #E3FF71, 본문 18px #EBEBEB (시안 줄바꿈 그대로) */
+.td__text { position: absolute; will-change: transform, opacity; }
+.td__text--rec { left: calc(128 * var(--u)); top: calc(var(--ty, 748.9) * var(--u)); }
+.td__text--par { left: calc(1252 * var(--u)); top: calc(719.9 * var(--u)); }
+.td__text--touch { left: calc(129 * var(--u)); top: calc(274.9 * var(--u)); }
+.td__label {
+  margin: calc(var(--lab-off, -6.4) * var(--u)) 0 0; font-size: calc(28 * var(--u)); font-weight: 500; line-height: 1.2; letter-spacing: -.02em; color: #E3FF71;
+}
+.td__body {
+  margin: calc(var(--body-gap, 36.1) * var(--u)) 0 0; font-size: calc(18 * var(--u)); font-weight: 400; line-height: 1.6; letter-spacing: -.02em;
+  color: #EBEBEB; white-space: nowrap;
+}
+@media (max-width: 768px) {
+  .tdetail { height: 460vh; }
+  .tdetail__stage { top: 0; bottom: auto; left: 50%; width: calc(1920 * var(--u)); transform: translateX(-50%); --u: calc(100vh / 1080); }
+  .td__text--rec, .td__text--par, .td__text--touch { left: 20px; right: 20px; top: auto; bottom: 56px; }
+  .td__label { margin: 0; font-size: 18px; }
+  .td__body { margin-top: 12px; font-size: 13px; white-space: normal; }
+  .td__body br { display: none; }
+}
+/* ---------- 03-0. EXPERIENCE — FEEL · FILL · FIELD (시안 EXPERIENCE.svg, js/experience.js) ----------
+   판 위쪽 모서리 둥글게(r90) + 연두 1px 테두리(#D3EF97 40%). 화면 고정, 장마다 배경 사진이 바뀌고 글이 떠오름 */
+.exp {
+  position: relative; z-index: 2; height: 520vh; --u: calc(100vw / 1920);
+  margin-top: -100vh;   /* 여백 없이, 앞 장면(체험대) 위로 판이 올라오며 덮음 */
+  background: #10160E;
+  clip-path: inset(0 round calc(90 * var(--u)) calc(90 * var(--u)) 0 0);
+}
+.exp::after {
+  content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  border: 1px solid rgba(211, 239, 151, .4); border-bottom: 0;
+  border-radius: calc(90 * var(--u)) calc(90 * var(--u)) 0 0;
+}
+.exp__sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+/* 배경: 사진 → 위아래 #10160E로 흐려짐(3.1% · 54.1% 투명 · 98.7%) → #10160E 43% */
+.exp__bg { position: absolute; inset: 0; opacity: 0; will-change: opacity; }
+.exp__bg img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); will-change: transform; }
+.exp__bg::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, #10160E 3.14%, rgba(16, 22, 14, 0) 54.1%, #10160E 98.68%),
+    rgba(16, 22, 14, .43);
+}
+.exp__stage { position: absolute; left: 0; top: 50%; width: 100%; height: calc(1080 * var(--u)); transform: translateY(-50%); }
+.exp__state { position: absolute; inset: 0; pointer-events: none; }
+.exp__state.is-on { pointer-events: auto; }
+.exp__state > * { position: absolute; margin: 0; }
+/* 글이 들고 나는 모습: ABOUT→TECH와 같게 (지난 장은 위로, 다음 장은 아래에서) */
+.es {
+  opacity: 0; transform: translateY(6vh); filter: blur(4px);
+  transition: opacity .6s var(--ease-out), transform .8s var(--ease-out), filter .6s;
+}
+.exp__state.is-past .es { transform: translateY(-9vh); filter: blur(6px); }
+.exp__state.is-on .es {
+  opacity: 1; transform: none; filter: none;
+  transition: opacity 1s var(--ease-out), transform 1.3s var(--ease-out), filter 1s;
+  transition-delay: calc(.35s + var(--i, 0) * .13s);
+}
+/* 소개 (시안 x130: 라벨 y299 / 제목 y371 / 본문 y540 — 글자 윗선 기준) */
+.exp__intro > * { left: calc(130 * var(--u)); }
+.exp__label { top: calc(295.2 * var(--u)); font-size: calc(20.2 * var(--u)); font-weight: 400; line-height: 1.2; color: #E3FF71; }
+.exp__title { top: calc(359.2 * var(--u)); font-size: calc(55.4 * var(--u)); font-weight: 500; line-height: 1.3; color: #EBEBEB; }
+.exp__body { top: calc(531.3 * var(--u)); font-size: calc(21.4 * var(--u)); font-weight: 400; line-height: 1.66; color: #EBEBEB; white-space: nowrap; }
+/* FEEL → FILL → FIELD: 시안처럼 세로선으로 이어진 한 줄(.exp__col).
+   기준점 = 지금 보이는 장의 이름 글자 윗선이 화면 y420. 줄 안 간격은 시안 그대로 (px@1920):
+   이름 윗선 FEEL 0 / FILL 917 / FIELD 1859, 설명 윗선 +73.6, 선 187~852 · 1123~1788 (x962, 2px)
+   JS가 스크롤에 따라 줄을 위로 올리고(--y), 선을 위에서 아래로 그리고, 가까운 장만 또렷하게 보이게 함 */
+.exp__col { position: absolute; left: 0; right: 0; top: calc(420 * var(--u)); height: 0; will-change: transform; }
+.exp__step { position: absolute; left: 0; right: 0; text-align: center; will-change: opacity; }
+.exp__step[data-i="0"] { top: 0; }
+.exp__step[data-i="1"] { top: calc(917 * var(--u)); }
+.exp__step[data-i="2"] { top: calc(1859 * var(--u)); }
+.exp__step > * { position: absolute; left: 0; right: 0; margin: 0; }
+.exp__name { top: calc(-8.8 * var(--u)); font-size: calc(42.6 * var(--u)); font-weight: 500; line-height: 1.2; color: #E3FF71; }
+.exp__desc { top: calc(65.1 * var(--u)); font-size: calc(21.3 * var(--u)); font-weight: 400; line-height: calc(36 * var(--u)); color: #EBEBEB; white-space: nowrap; }
+.exp__line {
+  position: absolute; left: calc(961 * var(--u)); width: 2px; height: calc(665 * var(--u));
+  background: #EBEBEB; transform: scaleY(0); transform-origin: 50% 0; will-change: transform;
+}
+.exp__line[data-i="0"] { top: calc(187 * var(--u)); }
+.exp__line[data-i="1"] { top: calc(1123 * var(--u)); }
+@media (max-width: 768px) {
+  .exp { --u: calc(100vh / 1080); height: 460vh; }
+  .exp__stage { left: 50%; width: calc(1920 * var(--u)); transform: translate(-50%, -50%); }
+  .exp__intro > * { left: calc(50% - 50vw + 20px); }
+  .exp__label { font-size: 13px; }
+  .exp__title { font-size: 26px; white-space: nowrap; }
+  .exp__body { font-size: 14px; white-space: normal; width: calc(100vw - 40px); }
+  .exp__body br { display: none; }
+  .exp__name { font-size: 30px; }
+  .exp__desc { font-size: 14px; line-height: 1.7; white-space: normal; }
+}
+/* ---------- 03-3. OUR FOREST ARCHIVE (시안 Frame 2147237911, 1920×2615, js/forest-archive.js) ----------
+   좌표는 시안 그대로(--u = 1px@1920)에서 01·02·03 묶음 사이만 220px씩 더 벌림(전체 2615→3055, 곡선도 세로로 같이 늘림).
+   글 위치는 글자 윗선이 시안과 맞도록 줄 높이만큼 위로 당김 */
+.arch { position: relative; height: calc(3055 * var(--u)); --u: calc(100vw / 1920); background: #10160E; overflow: hidden; }
+.arch__curve { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.arch__curve path { fill: none; stroke: #D3EF97; stroke-opacity: .15; stroke-width: 4; }
+.arch__rise { will-change: transform, opacity; }
+.arch__head { position: absolute; left: calc(128 * var(--u)); top: calc(144 * var(--u)); }
+.arch__title { margin: 0; font-size: calc(35 * var(--u)); font-weight: 400; line-height: 1.2; color: #E3FF71; }
+.arch__sub { margin: calc(13.2 * var(--u)) 0 0; font-size: calc(21.3 * var(--u)); font-weight: 400; line-height: 1.4; color: #EBEBEB; }
+/* 사진: 01 좌우 반전 + 연두 12% 테두리 / 02·03 노란빛 20% 곱하기 */
+.arch__photo { position: absolute; margin: 0; overflow: hidden; isolation: isolate; }
+.arch__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.arch__photo--1 { left: calc(128 * var(--u)); top: calc(406 * var(--u)); width: calc(822.2 * var(--u)); height: calc(467 * var(--u)); }
+.arch__photo--1 img { transform: scaleX(-1); }
+.arch__photo--1::after { content: ""; position: absolute; inset: 0; border: 1px solid rgba(211, 239, 151, .12); }
+.arch__photo--2 { left: calc(1110 * var(--u)); top: calc(1301 * var(--u)); width: calc(682.7 * var(--u)); height: calc(384 * var(--u)); }
+.arch__photo--3 { left: calc(409 * var(--u)); top: calc(2107 * var(--u)); width: calc(541 * var(--u)); height: calc(724 * var(--u)); }
+.arch__photo--2::after, .arch__photo--3::after { content: ""; position: absolute; inset: 0; background: rgba(166, 147, 0, .2); mix-blend-mode: multiply; }
+/* 글: 번호 20.6px #E3FF71 / 이름 27.1px 600 흰색 / 본문 19.4px 흰색, 줄 간격 37px */
+.arch__text { position: absolute; color: #fff; }
+.arch__text--1 { left: calc(1109.3 * var(--u)); top: calc(431 * var(--u)); }
+.arch__text--2 { left: calc(548.5 * var(--u)); top: calc(1354 * var(--u)); }
+.arch__text--3 { left: calc(1109.3 * var(--u)); top: calc(2377 * var(--u)); }
+.arch__num { margin: 0; font-size: calc(20.6 * var(--u)); font-weight: 400; line-height: 1.2; color: #E3FF71; }
+.arch__name { margin: calc(7.4 * var(--u)) 0 0; font-size: calc(27.1 * var(--u)); font-weight: 600; line-height: 1.3; }
+.arch__body { margin: calc(46 * var(--u)) 0 0; font-size: calc(19.37 * var(--u)); font-weight: 400; line-height: calc(37 * var(--u)); white-space: nowrap; }
+@media (max-width: 768px) {
+  .arch { height: auto; padding: 80px 20px 60px; }
+  .arch__head, .arch__photo, .arch__text { position: relative; left: auto; top: auto; }
+  .arch__title { font-size: 24px; }
+  .arch__sub { font-size: 14px; margin-top: 8px; }
+  .arch__photo { width: 100% !important; height: auto !important; aspect-ratio: 16 / 10; margin-top: 48px; }
+  .arch__photo--3 { aspect-ratio: 3 / 4; }
+  .arch__text { margin-top: 20px; }
+  .arch__num { font-size: 14px; }
+  .arch__name { font-size: 20px; }
+  .arch__body { margin-top: 14px; font-size: 14px; line-height: 1.7; white-space: normal; }
+  .arch__body br { display: none; }
+}
 .story__tech { justify-content: center; pointer-events: none; }
 .story.is-tech .story__tech { pointer-events: auto; }
 .st {
@@ -427,6 +649,7 @@ main > section:not(.hero):not(.hero2) { margin-top: var(--sec-gap); }
 
 @media (max-width: 768px) {
   .story { height: 240vh; }
+  .story--intro { height: 340vh; }
   .story__tech { padding-top: 4vh; }
   .story__cards { flex-direction: column; gap: 10px; width: 100%; margin-top: 4vh; }
   .story__card { width: 100%; min-height: 0; padding: 16px 18px; border-radius: 14px; }
@@ -696,6 +919,37 @@ main > section:not(.hero):not(.hero2) { margin-top: var(--sec-gap); }
   margin-top: 8.15vw;
 }
 .team__member { margin: 0; }
+/* 사진 등장: 1번부터 한 장씩 순서대로, 왼쪽에서 스르륵 들어오면서 카드가 뒷면 → 앞면으로 뒤집힘
+   (js/main.js 5-c가 그리드가 보이면 --d = 순번 × 0.15초 를 주고 is-in을 붙임) */
+.team__member {
+  opacity: 0;
+  perspective: 1400px;
+  transform: translate3d(-2.5vw, 0, 0);
+  transition:
+    opacity 1s cubic-bezier(.25, .6, .3, 1) var(--d, 0s),
+    transform 1.6s cubic-bezier(.22, .7, .25, 1) var(--d, 0s);
+}
+.team__member.is-in { opacity: 1; transform: translate3d(0, 0, 0); }
+/* 카드 본체: 처음엔 뒤집혀(뒷면이 보임) 있다가 앞면으로 돌아옴 */
+.team__member .team__photo {
+  overflow: visible; background: none;
+  transform-style: preserve-3d;
+  transform: rotateY(-180deg);
+  transition: transform 1.4s cubic-bezier(.3, .7, .2, 1) calc(var(--d, 0s) + .1s);
+}
+.team__member.is-in .team__photo { transform: rotateY(0deg); }
+.team__member .team__photo img { position: relative; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: #d9d9d6; }
+.team__member .team__photo::after {           /* 카드 뒷면 */
+  content: ""; position: absolute; inset: 0;
+  background: #1B2318; border: 1px solid rgba(227, 255, 113, .25);
+  transform: rotateY(180deg);
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+}
+.team__member figcaption { opacity: 0; transition: opacity .8s ease calc(var(--d, 0s) + .8s); }
+.team__member.is-in figcaption { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .team__member, .team__member .team__photo, .team__member figcaption { opacity: 1; transform: none; transition: none; }
+}
 .team__photo {
   position: relative;
   aspect-ratio: 272 / 364;
@@ -1368,37 +1622,48 @@ html.is-loading, html.is-loading * { cursor: none !important; }
 .totop.is-lift { bottom: calc(max(20px, 2.2vw) + max(64px, 4.6vw)); }
 .totop.is-hide { opacity: 0; pointer-events: none; }
 
-/* ---------- 09. Footer — 시안(푸터.png, 1920 기준) / 제목 #E3FF71, 본문 #EBEBEB ---------- */
+/* ---------- 09. Footer — 시안(Frame 6푸터222.svg, 1920×1017) 좌표 그대로(--u = 1px@1920) ----------
+   글자 위치는 글자 윗선이 시안과 맞도록 줄 높이만큼 위로 당긴 값. 본문 #BEBEBE, 제목 #E3FF71 */
 .foot {
   position: relative; margin-top: var(--sec-gap); overflow: hidden;
-  padding: 4.7vw 3.9vw 3vw 3.75vw;
-  background: #0B0F0A; border-top: 1px solid rgba(227, 255, 113, .3);
+  height: calc(1017 * var(--u)); --u: calc(100vw / 1920);
+  background: #10160E; color: #BEBEBE;
 }
-/* 배경: 첫 화면 이끼 사진을 흐리게 — 시안(1920×670) 기준 가로 꽉 차게(1920×1081), 사진 위쪽 321px(29.7%)는 잘려 올라감, 불투명도 20% */
-.foot__bg { position: absolute; left: 0; top: 0; width: 100%; z-index: 0; pointer-events: none; }
-.foot__bg img { display: block; width: 100%; height: auto; transform: translateY(-29.7%); opacity: .2; }
-.foot__cols, .foot__end { position: relative; z-index: 1; }
-.foot__cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2vw; }
-.foot__col small { display: block; margin-bottom: 1.8vw; font-size: max(12px, .94vw); font-weight: 600; line-height: 1.2; letter-spacing: .05em; color: #E3FF71; }
-.foot__col p { margin: 0 0 .9vw; font-size: max(12px, .83vw); line-height: 1.4; color: #EBEBEB; }
-.foot__dash { display: inline-block; width: 1.6em; height: 1px; margin: 0 .25em; vertical-align: middle; background: currentColor; }
-/* 큰 로고(왼쪽) + 저작권(오른쪽 아래, 로고 바닥선에 맞춤) */
-.foot__end { display: flex; align-items: flex-end; justify-content: space-between; gap: 2vw; margin-top: 2.95vw; }
-/* 로고를 입자로 그림 (js/foot-particles.js) — 이미지는 자리만 차지 */
-.foot__brand { position: relative; flex: 0 0 76.7vw; line-height: 0; }
+/* 배경: 이끼 사진을 가로 꽉 차게(1920×1080.5), 위로 31.7 잘림 → 그 위에 #10160E 79% */
+.foot__bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.foot__bg img { position: absolute; left: 0; top: calc(-31.7 * var(--u)); width: 100%; height: calc(1080.5 * var(--u)); max-width: none; object-fit: fill; }
+.foot__bg::after { content: ""; position: absolute; inset: 0; background: rgba(16, 22, 14, .79); }
+.foot > *:not(.foot__bg) { position: absolute; z-index: 1; margin: 0; }
+/* 큰 FEELD 로고: 입자로 그림 (js/foot-particles.js) — 이미지는 자리만 차지. 시안 x72~1847, y144 */
+.foot__brand { left: calc(72 * var(--u)); top: calc(144 * var(--u)); width: calc(1775 * var(--u)); line-height: 0; }
 .foot__gl { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .foot__brand.is-particles .foot__word { visibility: hidden; }
 .foot__word { display: block; width: 100%; height: auto; }
-.foot__copy { margin: 0; white-space: nowrap; font-size: max(10px, .73vw); line-height: 1; letter-spacing: .01em; color: rgba(227, 255, 113, .5); }
+.foot__rule { left: calc(56 * var(--u)); top: calc(632 * var(--u)); width: calc(1792 * var(--u)); height: 1px; background: rgba(211, 239, 151, .48); }
+.foot__slogan { left: calc(72.8 * var(--u)); top: calc(680 * var(--u)); font-size: calc(51 * var(--u)); font-weight: 500; line-height: calc(60 * var(--u)); color: #E3FF71; white-space: nowrap; }
+.foot__col small { display: block; font-size: calc(16.7 * var(--u)); font-weight: 500; line-height: 1.2; letter-spacing: calc(1.41 * var(--u)); color: #E3FF71; }
+.foot__col p, .foot__addr { font-size: calc(15.4 * var(--u)); font-weight: 400; line-height: calc(22 * var(--u)); white-space: nowrap; }
+.foot__col p { margin: calc(17 * var(--u)) 0 0; }
+.foot__col small + p { margin-top: calc(35.5 * var(--u)); }
+.foot__col .foot__names { margin-top: calc(19 * var(--u)); }
+.foot__col--ex { left: calc(677 * var(--u)); top: calc(688.7 * var(--u)); }
+.foot__col--team { left: calc(1282.5 * var(--u)); top: calc(688.9 * var(--u)); }
+.foot__col--credit { left: calc(1664.6 * var(--u)); top: calc(688.7 * var(--u)); }
+.foot__addr { left: calc(979.3 * var(--u)); top: calc(746.2 * var(--u)); }
+.foot__dash { display: inline-block; width: calc(23 * var(--u)); height: 1px; margin: 0 calc(6.6 * var(--u)) 0 calc(9.5 * var(--u)); vertical-align: middle; background: currentColor; }
+.foot__copy { left: calc(72.8 * var(--u)); top: calc(959.2 * var(--u)); font-size: calc(15.9 * var(--u)); line-height: 1.2; white-space: nowrap; color: rgba(227, 255, 113, .5); }
 @media (max-width: 768px) {
-  .foot { padding: 56px 20px 24px; }
-  .foot__cols { grid-template-columns: 1fr; gap: 28px; }
-  .foot__col small { margin-bottom: 12px; }
-  .foot__col p { margin-bottom: 6px; }
-  .foot__end { flex-direction: column; align-items: stretch; gap: 16px; margin-top: 40px; }
-  .foot__brand { flex: none; width: 100%; }
+  .foot { height: auto; padding: 56px 20px 32px; display: flex; flex-direction: column; gap: 22px; }
+  .foot > *:not(.foot__bg) { position: relative; left: auto; top: auto; }
+  .foot__bg img { top: 0; height: 100%; object-fit: cover; }
+  .foot__brand { width: 100%; order: 9; }
+  .foot__rule { width: 100%; }
+  .foot__slogan { font-size: 28px; line-height: 1.3; }
+  .foot__col small { font-size: 12px; letter-spacing: .08em; }
+  .foot__col p, .foot__addr { font-size: 13px; line-height: 1.5; white-space: normal; }
+  .foot__col p, .foot__col small + p, .foot__col .foot__names { margin-top: 8px; }
+  .foot__copy { order: 10; font-size: 11px; }
 }
-
 /* ---------- Mobile ---------- */
 @media (max-width: 768px) {
   .logo { top: 20px; left: 20px; }

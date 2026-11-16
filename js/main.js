@@ -89,20 +89,42 @@
     io5.observe(techSec);
   }
 
+  /* ---------- 5-c. TEAM 사진: 그리드가 보이면 1번부터 한 장씩 순서대로 카드가 뒤집히며 등장 ---------- */
+  const teamGrid = document.querySelector('.team__grid');
+  if (teamGrid) {
+    const cards = [...teamGrid.querySelectorAll('.team__member')];
+    const deal = () => cards.forEach((c, i) => { c.style.setProperty('--d', (i * 0.15).toFixed(2) + 's'); c.classList.add('is-in'); });
+    if (!('IntersectionObserver' in window)) deal();
+    else {
+      const ioT = new IntersectionObserver(([en]) => {
+        if (!en.isIntersecting) return;
+        deal();
+        ioT.disconnect();
+      }, { threshold: 0.25 });
+      ioT.observe(teamGrid);
+    }
+  }
+
   /* ---------- 5. (예전) ABOUT → TECHNOLOGY 한 화면 전환 — 지금은 두 섹션으로 나눠서 쓰지 않음 ---------- */
   const story = document.querySelector('.story:not(.story--about):not(.story--tech)');
   if (story) {
     const about = story.querySelector('.story__about'), tech = story.querySelector('.story__tech');
-    let on = false;
+    const hero = story.querySelector('.story__hero');   // 있으면: 시작 → ABOUT → TECH 3장
+    // 넘어가는 지점(스크롤 진행 0~1) — [앞으로 갈 때, 되돌아올 때] 경계에서 깜빡이지 않게 여유
+    const AT = hero ? { about: [0.16, 0.10], tech: [0.6, 0.53] } : { tech: [0.44, 0.36] };
+    let onAbout = !hero, onTech = false;
     const check = () => {
       const r = story.getBoundingClientRect();
       const p = -r.top / Math.max(1, r.height - innerHeight);
-      const next = on ? p > 0.36 : p > 0.44;              // 경계에서 깜빡이지 않게 여유
-      if (next !== on) {
-        on = next;
-        story.classList.toggle('is-tech', on);
-        about.setAttribute('aria-hidden', on ? 'true' : 'false');
-        tech.setAttribute('aria-hidden', on ? 'false' : 'true');
+      const nextAbout = !hero || (onAbout ? p > AT.about[1] : p > AT.about[0]);
+      const nextTech = onTech ? p > AT.tech[1] : p > AT.tech[0];
+      if (nextAbout !== onAbout || nextTech !== onTech) {
+        onAbout = nextAbout; onTech = nextTech;
+        story.classList.toggle('is-about', onAbout);
+        story.classList.toggle('is-tech', onTech);
+        if (hero) hero.setAttribute('aria-hidden', onAbout ? 'true' : 'false');
+        about.setAttribute('aria-hidden', onAbout && !onTech ? 'false' : 'true');
+        tech.setAttribute('aria-hidden', onTech ? 'false' : 'true');
       }
     };
     addEventListener('scroll', check, { passive: true });

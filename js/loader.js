@@ -31,7 +31,12 @@
     hold: reduce ? 0.1 : 0.45,    // 심볼로 잠깐 머무름
     maxWait: 7,                   // 페이지 로딩이 아무리 늦어도 이 시간이 지나면 넘어감
   };
-  const COLOR = [211, 239, 151];
+  const COLOR = [227, 255, 113];   // #E3FF71
+
+  // 시안(1920×1080) 기준 묶음 640×104: 심볼 (0,0) 100×103.2 / 로고 (140,11) 500×93
+  const GW = 640, GH = 104;
+  const SYM = { x: 0, y: 0, w: 100 }, WORD = { x: 140, y: 11, w: 500 };
+  const symImg = mark.querySelector('.loader__sym'), wordImg = mark.querySelector('.loader__word');
 
   let W = 0, H = 0, dpr = 1, size = 0, ox = 0, oy = 0;
   let parts = [];
@@ -43,24 +48,28 @@
     W = innerWidth; H = innerHeight;
     canvas.width = W * dpr; canvas.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    // 심볼 크기 (CSS .loader__mark와 같은 값)
-    size = Math.max(90, Math.min(W, H) * 0.16);
-    ox = W / 2 - size / 2; oy = H / 2 - size * (452 / 438) / 2;
+    // 묶음 크기: 1920 화면에서 640px(시안과 같은 비율), 좁은 화면에서는 너무 작아지지 않게
+    const s = Math.min(Math.max(W / 1920, 0.45), (W * 0.8) / GW);
+    size = GW * s;
+    ox = W / 2 - size / 2; oy = H / 2 - (GH * s) / 2;
+    mark.style.left = ox + 'px'; mark.style.top = oy + 'px';
+    mark.style.width = size + 'px'; mark.style.height = GH * s + 'px';
   }
 
-  // 심볼 이미지의 모양을 따라 입자 목표 위치를 뽑음
-  function build(img) {
-    const sw = 120, sh = Math.round(sw * img.naturalHeight / img.naturalWidth);
+  // 심볼 + 로고 모양을 따라 입자 목표 위치를 뽑음
+  function build() {
+    const sw = 520, k = sw / GW, sh = Math.round(GH * k);
     const c = document.createElement('canvas');
     c.width = sw; c.height = sh;
     const g = c.getContext('2d');
-    g.drawImage(img, 0, 0, sw, sh);
+    const put = (img, b) => g.drawImage(img, b.x * k, b.y * k, b.w * k, b.w * k * img.naturalHeight / img.naturalWidth);
+    put(symImg, SYM); put(wordImg, WORD);
     const a = g.getImageData(0, 0, sw, sh).data;
     const pts = [];
     for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) {
       if (a[(y * sw + x) * 4 + 3] > 140) pts.push([x / sw, y / sh]);
     }
-    const N = Math.min(2600, pts.length);
+    const N = Math.min(4200, pts.length);
     const sx = sh / sw;
     parts = Array.from({ length: N }, () => {
       const p = pts[(Math.random() * pts.length) | 0];
@@ -117,8 +126,9 @@
 
   resize();
   addEventListener('resize', resize);
-  const img = new Image();
-  img.onload = () => { build(img); raf = requestAnimationFrame(frame); };
-  img.onerror = () => { box.remove(); done(); };
-  img.src = mark.getAttribute('src');
+  const ready = (img) => img.complete && img.naturalWidth ? Promise.resolve() :
+    new Promise((ok, no) => { img.addEventListener('load', ok, { once: true }); img.addEventListener('error', no, { once: true }); });
+  Promise.all([ready(symImg), ready(wordImg)])
+    .then(() => { build(); raf = requestAnimationFrame(frame); })
+    .catch(() => { box.remove(); done(); });
 })();
