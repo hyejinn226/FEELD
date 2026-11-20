@@ -9,6 +9,59 @@
    저장: 지금은 이 브라우저(localStorage)에만 저장.
          나중에 Supabase를 연결하면 Store 부분만 바꾸면 됨.
    ========================================================= */
+/* ---------- 엽서 백업: 주소 끝에 ?export 를 붙여 열면 이 브라우저에 저장된 엽서를 파일로 받는 창이 뜸 ----------
+   예) https://feeld.pages.dev/?export → [엽서 파일 받기] → feeld-postcards-날짜.json
+   엽서 데이터는 읽기만 함(지우거나 바꾸지 않음). 컴퓨터·브라우저 설정은 건드리지 않음 */
+(() => {
+  if (!/[?&]export\b/.test(location.search)) return;
+  let cards = [];
+  try { cards = JSON.parse(localStorage.getItem('feeld-postcards-v1') || '[]'); } catch (e) {}
+  const pad = (n) => String(n).padStart(2, '0');
+  const now = new Date();
+  const stamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+  const data = {
+    app: 'FEELD postcards',
+    key: 'feeld-postcards-v1',
+    exportedAt: now.toISOString(),
+    page: location.origin + location.pathname,
+    count: cards.length,
+    // photo·stamp: 0부터 센 번호 (assets/postcard/photo{번호+1}.webp, stamp{번호+1}.webp), ts: 만든 시각(ms)
+    cards,
+  };
+  const json = JSON.stringify(data, null, 2);
+  const name = `feeld-postcards-${stamp}.json`;
+
+  const box = document.createElement('div');
+  box.setAttribute('role', 'dialog');
+  box.setAttribute('aria-label', '엽서 백업');
+  box.style.cssText = 'position:fixed;inset:0;z-index:9500;display:flex;align-items:center;justify-content:center;'
+    + 'background:rgba(16,22,14,.92);color:#EBEBEB;font-family:inherit;cursor:auto !important;';
+  box.innerHTML = `
+    <div style="width:min(440px,calc(100vw - 40px));padding:32px 28px;border:1px solid rgba(227,255,113,.4);border-radius:16px;background:#10160E;text-align:center;">
+      <p style="margin:0;color:#E3FF71;font-size:14px;letter-spacing:.08em;">POSTCARD BACKUP</p>
+      <p style="margin:14px 0 0;font-size:22px;font-weight:600;">이 브라우저에 저장된 엽서 ${cards.length}장</p>
+      <p style="margin:10px 0 0;font-size:14px;line-height:1.6;color:#BEBEBE;">버튼을 누르면 <b>${name}</b> 파일이<br />다운로드 폴더에 저장돼요. 엽서는 지워지지 않아요.</p>
+      <button type="button" data-act="save" style="margin-top:22px;width:100%;padding:14px 0;border:0;border-radius:999px;background:#E3FF71;color:#10160E;font:inherit;font-size:16px;font-weight:600;cursor:pointer !important;">엽서 파일 받기</button>
+      <button type="button" data-act="close" style="margin-top:10px;width:100%;padding:12px 0;border:1px solid rgba(235,235,235,.3);border-radius:999px;background:none;color:#EBEBEB;font:inherit;font-size:14px;cursor:pointer !important;">닫기</button>
+      <p data-msg style="margin:14px 0 0;min-height:1.4em;font-size:13px;color:#E3FF71;"></p>
+    </div>`;
+  box.addEventListener('click', (e) => {
+    const act = e.target.closest('[data-act]')?.dataset.act;
+    if (act === 'save') {
+      const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+      const a = document.createElement('a');
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      box.querySelector('[data-msg]').textContent = `저장했어요 (${cards.length}장). 다운로드 폴더를 확인해 주세요.`;
+    } else if (act === 'close') {
+      box.remove();
+    }
+  });
+  const show = () => document.body.appendChild(box);
+  if (document.body) show(); else addEventListener('DOMContentLoaded', show);
+})();
+
 (() => {
   const sec = document.querySelector('.post');
   if (!sec) return;
