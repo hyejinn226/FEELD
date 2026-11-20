@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" />
   <!-- 첫 화면 FEELD 이탤릭 세리프 -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400&display=swap" />
-  <link rel="stylesheet" href="css/style.css?v=88" />
+  <link rel="stylesheet" href="css/style.css?v=89" />
   <link rel="preload" href="assets/splat/forest-gs.bin" as="fetch" crossorigin />
 </head>
 <body>
@@ -29,7 +29,7 @@
       <img class="loader__word" src="assets/img/brand/wordmark.svg" alt="" />
     </div>
   </div>
-  <script src="js/loader.js?v=2"></script>
+  <script src="js/loader.js?v=3"></script>
 
   <a class="logo" href="#top" aria-label="FEELD 처음으로">
     <img class="logo__mark" src="assets/img/brand/symbol-lime.png" alt="FEELD" width="44" height="46" />
@@ -218,49 +218,6 @@
       </div>
     </section>
 
-    <!-- 03-1b. JOURNEY — 숲길 곡선 위 7단계 (js/journey.js)
-         좌표는 시안(1595×884) 기준 viewBox 그대로 사용 -->
-    <section class="journey" aria-labelledby="journey-step">
-      <img class="journey__bg" src="assets/img/journey-bg.webp" alt="" aria-hidden="true" />
-      <div class="journey__head">
-        <p class="about__label">MAKING PROCESS</p>
-        <h2 class="journey__title">숲을 걷는 일에서, 손끝의 숲이 되기까지</h2>
-        <p class="journey__guide">선 위의 점을 눌러 제작 과정을 확인해보세요.</p>
-      </div>
-      <svg class="journey__svg" viewBox="0 -190 1595 884" aria-hidden="false">
-        <defs>
-          <filter id="jGlow" x="-200%" y="-200%" width="500%" height="500%">
-            <feGaussianBlur stdDeviation="6" />
-          </filter>
-        </defs>
-        <g class="journey__track" transform="translate(797.5 347.5) scale(0.8) translate(-797.5 -347.5)">
-        <path class="journey__path" d="M129.0,311.0 C134.7,303.1 150.0,277.7 163.1,263.5 C176.3,249.4 191.3,235.6 207.9,226.1 C224.4,216.5 243.7,208.6 262.5,206.3 C281.2,203.9 301.4,208.7 320.5,212.1 C339.7,215.5 358.5,220.9 377.2,226.4 C395.9,231.9 414.1,239.5 432.7,245.0 C451.4,250.6 470.4,259.0 489.3,259.8 C508.2,260.6 528.1,256.0 546.2,249.7 C564.3,243.5 581.2,232.4 597.8,222.3 C614.5,212.2 630.0,200.2 646.2,189.3 C662.3,178.3 678.1,166.8 694.7,156.6 C711.4,146.5 728.2,136.4 745.9,128.3 C763.5,120.2 781.9,112.3 800.7,107.9 C819.4,103.5 839.7,99.6 858.5,101.9 C877.3,104.1 895.7,113.6 913.4,121.4 C931.2,129.2 947.9,139.6 965.2,148.7 C982.4,157.9 999.1,168.2 1016.7,176.4 C1034.4,184.6 1052.4,192.8 1071.0,197.9 C1089.7,202.9 1109.5,205.0 1128.8,206.6 C1148.2,208.2 1167.9,206.9 1187.4,207.6 C1206.8,208.2 1226.6,208.0 1245.8,210.7 C1265.0,213.4 1284.7,216.9 1302.7,223.8 C1320.7,230.7 1336.6,243.0 1353.8,252.1 C1371.0,261.2 1387.7,273.2 1406.0,278.3 C1424.4,283.5 1454.3,282.2 1464.0,283.0" />
-        <g class="journey__flag">
-          <line x1="1464.5" y1="283" x2="1464.5" y2="214.2" />
-          <polygon points="1464.5,214.2 1497.0,225.5 1464.5,236.8" />
-        </g>
-        <g class="journey__walker">
-          <circle r="15.0" class="journey__walker-glow" filter="url(#jGlow)" />
-          <circle r="4.75" class="journey__walker-core" />
-        </g>
-        <g class="journey__dots">
-          <g class="journey__dot" tabindex="0" role="button" data-step="WALK" data-cap="직접 걸을 숲을 찾아 안산 메타세쿼이아 숲길 답사" transform="translate(129 311)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
-          <g class="journey__dot" tabindex="0" role="button" data-step="RECORD" data-cap="Insta360으로 숲길을 걸으며 360도 촬영, Zoom H3-VR로 숲의 소리 녹음" transform="translate(278 206)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
-          <g class="journey__dot" tabindex="0" role="button" data-step="SPLAT" data-cap="촬영한 영상을 3D 가우시안 스플랫으로 바꿔 수백만 개의 빛 입자로 재구성" transform="translate(505 261)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
-          <g class="journey__dot" tabindex="0" role="button" data-step="SPACE" data-cap="입자를 Unity로 옮겨 걸어 들어갈 수 있는 숲 공간으로 연출" transform="translate(855 101)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
-          <g class="journey__dot" tabindex="0" role="button" data-step="TOUCH" data-cap="Leap Motion으로 손을 읽어, 머무는 시간과 움직임에 따라 숲의 색과 소리가 돌아오게" transform="translate(1120 206)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
-          <g class="journey__dot" tabindex="0" role="button" data-step="TABLE" data-cap="이끼와 유목, 나무껍질로 직접 손을 얹는 체험대 제작" transform="translate(1369 261)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
-          <g class="journey__dot" tabindex="0" role="button" data-step="FEELD" data-cap="미디어월과 체험대를 하나의 방으로 엮어, 우리가 걸은 숲을 관객의 손끝으로" transform="translate(1464 283)"><circle r="42.5" class="hit" /><circle r="11.88" /></g>
-        </g>
-        </g>
-        <line class="journey__rule" x1="302.7" y1="347.5" x2="1291.5" y2="347.5" />
-      </svg>
-      <div class="journey__text" aria-live="polite">
-        <p id="journey-step" class="journey__step">1. WALK</p>
-        <p class="journey__cap">직접 걸을 숲을 찾아 안산 메타세쿼이아 숲길 답사</p>
-      </div>
-    </section>
-
     <!-- 03-1. PROCESS 회전 갤러리 — 현재 사이트에서 빼 둔 상태 (보관용)
          다시 넣으려면: 아래 <template> 태그 두 줄을 지우고, 맨 아래 process-ring.js 스크립트 주석을 해제
          관련 파일: js/process-ring.js, css "03-1. Process ring" 블록, assets/img/process/p01~p10.webp -->
@@ -307,23 +264,6 @@
         <span class="touch__dot" aria-hidden="true"></span>
         <p class="touch__main">마우스를 클릭한 채로 기다려 보세요</p>
         <p class="touch__sub">흩어진 빛이 모여 숲이 깨어납니다 · 클릭한 채로 움직이면 숲이 일렁입니다</p>
-      </div>
-    </section>
-
-    <!-- 04. EXPERIENCE (풀배경) -->
-    <section class="about bleed bleed--hand" aria-labelledby="exp-title">
-      <div class="about__bg" aria-hidden="true"><img src="assets/img/sec-hand.jpg" alt="" /></div>
-      <div class="about__inner">
-        <p class="about__label reveal">EXPERIENCE</p>
-        <h2 id="exp-title" class="about__title reveal-lines">
-          <span class="line"><span>손끝이 닿는 곳에서,</span></span>
-          <span class="line"><span>숲이 다시 깨어납니다.</span></span>
-        </h2>
-        <p class="about__body reveal" style="--d:.35s">
-          숲에서 직접 녹음한 바람과 새소리가 손의 움직임을 따라 커지고 잦아듭니다.<br />
-          정면의 미디어월과 양옆을 감싼 커튼이 숲의 빛을 머금어, 방 전체가 하나의 숲이 됩니다.<br />
-          눈으로만 보는 숲이 아니라, 손과 귀와 몸으로 머무는 숲입니다.
-        </p>
       </div>
     </section>
 
@@ -478,11 +418,10 @@
   <script src="js/experience.js?v=2"></script>
   <script src="js/forest-touch.js?v=5"></script>
   <!-- <script src="js/process-ring.js?v=6"></script>  (회전 갤러리 보관 중) -->
-  <script src="js/journey.js?v=4"></script>
   <script src="js/forest-archive.js?v=2"></script>
   <script src="js/space3d.js?v=44"></script>
-  <script src="js/postcard.js?v=8"></script>
-  <script src="js/foot-particles.js?v=10"></script>
+  <script src="js/postcard.js?v=9"></script>
+  <script src="js/foot-particles.js?v=11"></script>
   <!-- 3D 모델을 다시 쓰려면 아래 주석을 해제 (assets/model/driftwood.glb 교체 후)
   <script type="importmap">
     {

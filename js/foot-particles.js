@@ -33,14 +33,32 @@
   const mouse = { x: -1e4, y: -1e4 };
   let visible = false, raf = 0, active = false;
 
-  function sample(img) {
+  // SVG 로고를 화면에 보이는 크기 그대로 그린 이미지로 만듦.
+  // (예전 사파리는 SVG를 canvas에 늘려 그리면 원래 크기(500×93)로 작게 그리는 경우가 있어서,
+  //  SVG 자체의 width/height를 목표 크기로 바꿔 새로 그림)
+  async function raster(img, w, h) {
+    const src = img.currentSrc || img.src;
+    if (!/\.svg(\?|$)/i.test(src)) return img;
+    try {
+      const txt = await (await fetch(src)).text();
+      const svg = txt.replace(/<svg([^>]*?)\swidth="[^"]*"/, '<svg$1').replace(/<svg([^>]*?)\sheight="[^"]*"/, '<svg$1')
+        .replace(/<svg/, `<svg width="${w}" height="${h}" preserveAspectRatio="none"`);
+      const im = new Image();
+      im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      await (im.decode ? im.decode() : new Promise((ok, no) => { im.onload = ok; im.onerror = no; }));
+      return im;
+    } catch (e) { return img; }
+  }
+
+  async function sample(img) {
     const br = brand.getBoundingClientRect(), r = img.getBoundingClientRect();
     const w = Math.round(r.width), h = Math.round(r.height);
     if (!w || !h) return null;
     const c = document.createElement('canvas');
     c.width = w; c.height = h;
     const g = c.getContext('2d');
-    g.drawImage(img, 0, 0, w, h);
+    const pic = await raster(img, w, h);
+    g.drawImage(pic, 0, 0, w, h);
     const a = g.getImageData(0, 0, w, h).data;
     const pts = [];
     const s = CFG.step;
@@ -64,14 +82,20 @@
     return G;
   }
 
-  function build() {
+  let buildId = 0;
+  async function build() {
+    const id = ++buildId;
     const br = brand.getBoundingClientRect();
+    const next = (await Promise.all(imgs.map(sample))).filter(Boolean);
+    if (id !== buildId) return;                 // 그사이 화면 크기가 또 바뀌었으면 버림
     dpr = Math.min(devicePixelRatio || 1, 2);
     W = Math.round(br.width); H = Math.round(br.height);
     canvas.width = W * dpr; canvas.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    groups = imgs.map(sample).filter(Boolean);
-    if (groups.length) brand.classList.add('is-particles');   // 원래 이미지는 숨기고 입자로
+    groups = next;
+    // 입자가 너무 적게 뽑히면(그리기 실패) 원래 로고 이미지를 그대로 보여 줌
+    const total = groups.reduce((s, G) => s + G.n, 0);
+    brand.classList.toggle('is-particles', total > 500);
     draw();
   }
 

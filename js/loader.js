@@ -62,8 +62,9 @@
     const c = document.createElement('canvas');
     c.width = sw; c.height = sh;
     const g = c.getContext('2d');
-    const put = (img, b) => g.drawImage(img, b.x * k, b.y * k, b.w * k, b.w * k * img.naturalHeight / img.naturalWidth);
-    put(symImg, SYM); put(wordImg, WORD);
+    const put = (img, b, ratio) => g.drawImage(img, b.x * k, b.y * k, b.w * k, b.w * k * ratio);
+    put(symImg, SYM, symImg.naturalHeight / symImg.naturalWidth);
+    put(wordPic || wordImg, WORD, 93 / 500);
     const a = g.getImageData(0, 0, sw, sh).data;
     const pts = [];
     for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) {
@@ -128,7 +129,23 @@
   addEventListener('resize', resize);
   const ready = (img) => img.complete && img.naturalWidth ? Promise.resolve() :
     new Promise((ok, no) => { img.addEventListener('load', ok, { once: true }); img.addEventListener('error', no, { once: true }); });
+  // 예전 사파리는 SVG를 canvas에 줄이거나 늘려 그리면 원래 크기로 그리는 경우가 있어서,
+  // 로고 SVG의 width/height를 입자용 크기로 바꾼 이미지를 따로 만들어 씀
+  let wordPic = null;
+  const rasterWord = async () => {
+    try {
+      const w = Math.round(WORD.w * 520 / GW), h = Math.round(w * 93 / 500);
+      const txt = await (await fetch(wordImg.currentSrc || wordImg.src)).text();
+      const svg = txt.replace(/<svg([^>]*?)\swidth="[^"]*"/, '<svg$1').replace(/<svg([^>]*?)\sheight="[^"]*"/, '<svg$1')
+        .replace(/<svg/, `<svg width="${w}" height="${h}" preserveAspectRatio="none"`);
+      const im = new Image();
+      im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      await (im.decode ? im.decode() : new Promise((ok, no) => { im.onload = ok; im.onerror = no; }));
+      wordPic = im;
+    } catch (e) { wordPic = null; }
+  };
   Promise.all([ready(symImg), ready(wordImg)])
+    .then(rasterWord)
     .then(() => { build(); raf = requestAnimationFrame(frame); })
     .catch(() => { box.remove(); done(); });
 })();

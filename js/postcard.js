@@ -99,10 +99,25 @@
     },
   };
 
+  /* ---------- 엽서 너비(--cw) 알려 주기 ----------
+     엽서 글자 크기·줄 간격은 엽서 너비에 비례(cqw). 예전 사파리는 cqw를 몰라서 글자가 작게 나오고 쓰기 줄과 어긋남
+     → 엽서마다 실제 너비(px)를 --cw로 넣어 주고 CSS가 그걸로 계산 (최신 브라우저는 그대로 cqw 사용) */
+  const needCw = !(window.CSS && CSS.supports && CSS.supports('width', '1cqw'));
+  const cwRO = needCw && 'ResizeObserver' in window
+    ? new ResizeObserver((list) => list.forEach((en) => en.target.style.setProperty('--cw', en.target.offsetWidth + 'px')))
+    : null;
+  const watchCw = (el) => {
+    if (!needCw) return;
+    if (cwRO) cwRO.observe(el);
+    else requestAnimationFrame(() => el.style.setProperty('--cw', el.offsetWidth + 'px'));
+  };
+  if (needCw && !cwRO) addEventListener('resize', () => document.querySelectorAll('.pc').forEach((el) => el.style.setProperty('--cw', el.offsetWidth + 'px')));
+
   /* ---------- 엽서 한 장 만들기 ---------- */
   function makeCard(d, { editable = false } = {}) {
     const el = document.createElement('div');
     el.className = 'pc';
+    watchCw(el);
     el.innerHTML = `
       <div class="pc__inner">
         <div class="pc__face pc__front">

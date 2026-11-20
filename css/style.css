@@ -1348,6 +1348,7 @@ main > section:not(.hero):not(.hero2):not(.story--intro):not(.tdetail):not(.exp)
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overflow: hidden;
+  box-shadow: 0 calc(var(--cw, 500px) * .014) calc(var(--cw, 500px) * .045) rgba(0,0,0,.45);   /* 예전 사파리(cqw 미지원)용 */
   box-shadow: 0 1.4cqw 4.5cqw rgba(0,0,0,.45);
   background: #fff;
 }
@@ -1364,6 +1365,7 @@ main > section:not(.hero):not(.hero2):not(.story--intro):not(.tdetail):not(.exp)
   position: absolute;
   left: 81.84%; top: 6.63%; width: 14.262%; height: 30.667%; /* 엽서 예시.svg: 864.25, 40.64, 150.61 × 187.99 (칸보다 크게) */
   object-fit: contain;
+  filter: drop-shadow(0 calc(var(--cw, 500px) * .0025) calc(var(--cw, 500px) * .005) rgba(40,46,36,.22));
   filter: drop-shadow(0 .25cqw .5cqw rgba(40,46,36,.22));
 }
 .pc__stamp:not([src]) { visibility: hidden; }
@@ -1389,11 +1391,14 @@ main > section:not(.hero):not(.hero2):not(.story--intro):not(.tdetail):not(.exp)
   position: absolute;
   left: 54.11%; top: 46.4%; width: 40.29%; height: 43.65%;  /* 쓰기 줄 571~997 × 5줄 */
   margin: 0; padding: 0;
+  /* 글자 크기·줄 간격은 엽서 너비에 비례 — --cw(엽서 너비 px)는 js/postcard.js가 넣어 줌. 예전 사파리는 cqw를 몰라서 이 줄을 씀 */
+  font: 400 calc(var(--cw, 500px) * .01761)/calc(var(--cw, 500px) * .05068) "kim-jung-chul-myungjo", "Kim jung chul Myungjo", "KimjungchulMyungjo-Regular", "Nanum Myeongjo", serif;
   font: 400 1.761cqw/5.068cqw "kim-jung-chul-myungjo", "Kim jung chul Myungjo", "KimjungchulMyungjo-Regular", "Nanum Myeongjo", serif;
   color: #5e6b59;
   white-space: pre-wrap;
   word-break: break-all;
   overflow: hidden;
+  transform: translateY(calc(var(--cw, 500px) * .0105));
   transform: translateY(1.05cqw);   /* 글자 아래가 쓰기 줄 바로 위에 앉도록 */
   text-align: left;
 }
@@ -1440,7 +1445,7 @@ textarea.pc__text { background: transparent; border: 0; outline: 0; resize: none
 .pcf__fly { transform-origin: 50% 50%; }
 .pcf .pc { transition: transform .5s var(--ease-out); }
 .pcf:hover .pc { transform: scale(1.05); }
-.pcf.is-new .pc__face { box-shadow: 0 0 0 1px rgba(201,222,142,.0), 0 1.4cqw 4.5cqw rgba(0,0,0,.45); }
+.pcf.is-new .pc__face { box-shadow: 0 0 0 1px rgba(201,222,142,.0), 0 calc(var(--cw, 500px) * .014) calc(var(--cw, 500px) * .045) rgba(0,0,0,.45); box-shadow: 0 0 0 1px rgba(201,222,142,.0), 0 1.4cqw 4.5cqw rgba(0,0,0,.45); }
 
 /* B. 만들기 */
 .post__maker {
