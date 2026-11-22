@@ -19,7 +19,8 @@
   </a>
 
   <!-- 저장된 엽서 모아보기 (js/postcard-gallery.js)
-       이 브라우저에 저장된 엽서(사이트에서 만든 엽서)를 정렬해서 보여 줌. 글 면이 먼저 보이고, 누르면 사진 면으로 뒤집힘 -->
+       전시(2026.11.20~22)에서 관객이 쓴 엽서 백업(assets/postcard/archive.json)을 정렬해서 보여 줌.
+       글 면이 먼저 보이고, 누르면 사진 면으로 뒤집힘. [엽서 저장]은 사진 면 + 글 면을 위아래로 붙인 PNG 한 장 -->
   <main class="pg">
     <header class="pg__head">
       <a class="pg__back" href="index.html#post-title">← 엽서 페이지로</a>
@@ -32,17 +33,12 @@
     <ul class="pg__grid" aria-label="저장된 엽서 목록"></ul>
 
     <div class="pg__empty" hidden>
-      <p>아직 이 브라우저에 저장된 엽서가 없어요.</p>
-      <p class="pg__empty-sub">엽서는 만든 기기의 브라우저에 저장돼요. 백업 파일(.json)이 있다면 아래에서 불러올 수 있어요.</p>
-    </div>
-
-    <div class="pg__tools">
-      <label class="pg__import">백업 파일(.json) 불러와서 보기<input type="file" accept=".json,application/json" hidden /></label>
+      <p>엽서를 불러오지 못했어요. 잠시 후 다시 열어 주세요.</p>
     </div>
   </main>
 
   <canvas class="cursor" aria-hidden="true"></canvas>
   <script src="js/main.js?v=22"></script>
-  <script src="js/postcard-gallery.js?v=1"></script>
+  <script src="js/postcard-gallery.js?v=2"></script>
 </body>
 </html>

@@ -1,14 +1,13 @@
 /* =========================================================
    FEELD — 저장된 엽서 모아보기 (postcards.html)
-   - 이 브라우저에 저장된 엽서(localStorage 'feeld-postcards-v1')를 최신순으로 정렬해 보여 줌
+   - 전시 때 백업한 엽서(assets/postcard/archive.json)를 최신순으로 정렬해 보여 줌
    - 처음엔 글 면(뒷면)이 보이고, 엽서를 누르면 사진 면(앞면)으로 뒤집힘
-   - 엽서마다 [글 면 저장] [사진 면 저장] → 사이트와 같은 모습의 PNG(2112×1226)로 다운로드
-   - 백업 파일(.json, 주소?export로 받은 파일)을 불러와서 볼 수도 있음 (보기만 함, 저장소는 건드리지 않음)
+   - 엽서마다 [엽서 저장] → 사진 면 위, 글 면 아래로 붙인 PNG 한 장(2112×2452)으로 다운로드
    ========================================================= */
 (() => {
   const grid = document.querySelector('.pg__grid');
   if (!grid) return;
-  const KEY = 'feeld-postcards-v1';
+  const ARCHIVE = 'assets/postcard/archive.json';
   const BASE = 'assets/postcard/';
   const PHOTO = (n) => `${BASE}photo${(n % 6) + 1}.webp`;
   const STAMP = (n) => `${BASE}stamp${(n % 6) + 1}.webp`;
@@ -16,10 +15,8 @@
   const emptyEl = document.querySelector('.pg__empty');
   const pad = (n, l = 2) => String(n).padStart(l, '0');
 
-  /* ---------- 데이터 ---------- */
+  /* ---------- 데이터 (전시 엽서 백업 파일) ---------- */
   let cards = [];
-  try { cards = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
-  const keyOf = (c) => c.id || String(c.ts);
 
   /* ---------- 예전 사파리(cqw 미지원)용: 엽서 너비를 --cw로 ---------- */
   const needCw = !(window.CSS && CSS.supports && CSS.supports('width', '1cqw'));
@@ -61,8 +58,7 @@
       <div class="pg__meta">
         <span class="pg__no">No.${pad(no, 3)}</span><span class="pg__when">${whenTxt}</span>
         <span class="pg__dl">
-          <button type="button" class="pg__btn" data-side="back">글 면 저장</button>
-          <button type="button" class="pg__btn" data-side="front">사진 면 저장</button>
+          <button type="button" class="pg__btn">엽서 저장</button>
         </span>
       </div>`;
     li.querySelector('.pc__text').textContent = c.text || '';
@@ -70,7 +66,8 @@
     pc.style.setProperty('--mr', '0deg');
     if (cwRO) cwRO.observe(pc);
     pc.addEventListener('click', () => pc.classList.toggle('is-flipped'));
-    li.querySelectorAll('.pg__btn').forEach((b) => b.addEventListener('click', () => download(c, no, b.dataset.side, b)));
+    const btn = li.querySelector('.pg__btn');
+    btn.addEventListener('click', () => download(c, no, btn));
     return li;
   }
 
@@ -157,15 +154,26 @@
     return cv;
   }
 
-  async function download(c, no, side, btn) {
+  // 사진 면(위) + 글 면(아래)을 붙인 한 장
+  async function drawBoth(c) {
+    const [front, back] = await Promise.all([drawCard(c, 'front'), drawCard(c, 'back')]);
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H * 2;
+    const ctx = cv.getContext('2d');
+    ctx.drawImage(front, 0, 0);
+    ctx.drawImage(back, 0, H);
+    return cv;
+  }
+
+  async function download(c, no, btn) {
     const old = btn.textContent;
     btn.disabled = true; btn.textContent = '만드는 중…';
     try {
-      const cv = await drawCard(c, side);
+      const cv = await drawBoth(c);
       const blob = await new Promise((ok) => cv.toBlob(ok, 'image/png'));
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = `feeld-postcard-${pad(no, 3)}-${side === 'back' ? '글' : '사진'}.png`;
+      a.href = url; a.download = `feeld-postcard-${pad(no, 3)}.png`;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
       btn.textContent = '저장됨';
@@ -175,23 +183,12 @@
     setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1600);
   }
 
-  /* ---------- 백업 파일 불러와서 보기 (보기만 함) ---------- */
-  const file = document.querySelector('.pg__import input');
-  if (file) file.addEventListener('change', async () => {
-    const f = file.files && file.files[0];
-    if (!f) return;
-    try {
-      const data = JSON.parse(await f.text());
-      const list = Array.isArray(data) ? data : (data.cards || []);
-      const map = new Map(cards.map((c) => [keyOf(c), c]));
-      list.forEach((c) => { if (c && (c.text != null || c.photo != null)) map.set(keyOf(c), c); });
-      cards = [...map.values()].sort((a, b) => (a.ts || 0) - (b.ts || 0));
+  /* ---------- 불러오기 ---------- */
+  fetch(ARCHIVE, { cache: 'no-cache' })
+    .then((r) => r.json())
+    .then((data) => {
+      cards = (Array.isArray(data) ? data : data.cards || []).slice().sort((a, b) => (a.ts || 0) - (b.ts || 0));
       render();
-    } catch (e) {
-      alert('엽서 백업 파일을 읽지 못했어요.');
-    }
-    file.value = '';
-  });
-
-  render();
+    })
+    .catch(() => { emptyEl.hidden = false; });
 })();
