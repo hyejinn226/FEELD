@@ -1550,6 +1550,65 @@ textarea.pc__text { background: transparent; border: 0; outline: 0; resize: none
   .post { --u: min(2.1vw, 1.1vh); }
 }
 
+/* 엽서 섹션 → 저장된 엽서 페이지(postcards.html)로 가는 버튼: '나의 엽서 만들기'와 같은 줄, 왼쪽 */
+.post__saved {
+  position: absolute; z-index: 3;
+  left: 3.6%; bottom: 7%;
+  text-decoration: none;
+  transition: opacity .6s var(--ease-out), background .3s;
+}
+.post.is-making .post__saved,
+.post.is-viewing .post__saved { opacity: 0; pointer-events: none; }
+
+/* ---------- 저장된 엽서 페이지 (postcards.html, js/postcard-gallery.js) ----------
+   떠다니는 연출 없이 카드 목록처럼 정렬. 글 면이 먼저 보이고 누르면 사진 면 */
+.pg-body { background: #10160E; }
+.pg { padding: max(110px, 8vw) 5vw max(80px, 6vw); color: #EBEBEB; }
+.pg__head { text-align: center; }
+.pg__back {
+  display: inline-block; margin-bottom: max(28px, 2.4vw);
+  font-size: max(13px, .78vw); color: rgba(235,235,235,.75); text-decoration: none;
+  border: 1px solid rgba(235,235,235,.35); border-radius: 999px; padding: .55em 1.35em;
+  transition: background .3s, color .3s;
+}
+.pg__back:hover { background: rgba(255,255,255,.1); color: #fff; }
+.pg__label { margin: 0; font-size: max(13px, .94vw); letter-spacing: .06em; color: #E3FF71; }
+.pg__title { margin: .5em 0 0; font-size: max(26px, 2.4vw); font-weight: 500; }
+.pg__count { margin: .9em 0 0; font-size: max(13px, .83vw); color: #E3FF71; }
+.pg__hint { margin: .35em 0 0; font-size: max(12px, .78vw); color: rgba(235,235,235,.6); }
+.pg__grid {
+  list-style: none; margin: max(40px, 3.6vw) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: max(36px, 3vw) max(20px, 2vw);
+}
+.pg__item { min-width: 0; }
+.pg__item .pc {
+  display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer;
+  font: inherit; color: inherit; text-align: left;
+}
+.pg__item .pc__face { box-shadow: 0 6px 22px rgba(0,0,0,.35); }
+.pg__item .pc__inner { display: block; }
+.pg__item .pc__face, .pg__item .pc__text { display: block; }
+.pg__meta { display: flex; flex-wrap: wrap; align-items: center; gap: .4em .9em; margin-top: max(12px, .9vw); font-size: max(12px, .73vw); color: rgba(235,235,235,.7); }
+.pg__no { color: #E3FF71; }
+.pg__dl { margin-left: auto; display: flex; gap: .5em; }
+.pg__btn {
+  font: inherit; font-size: max(12px, .7vw); color: #EBEBEB;
+  background: none; border: 1px solid rgba(235,235,235,.4); border-radius: 999px;
+  padding: .45em 1.1em; cursor: pointer; transition: background .3s, border-color .3s, color .3s;
+}
+.pg__btn:hover { background: #E3FF71; border-color: #E3FF71; color: #10160E; }
+.pg__btn:disabled { opacity: .6; cursor: default; }
+.pg__empty { margin-top: max(48px, 4vw); text-align: center; font-size: max(14px, .9vw); }
+.pg__empty-sub { margin-top: .6em; font-size: max(12px, .78vw); color: rgba(235,235,235,.6); }
+.pg__tools { margin-top: max(56px, 4.5vw); text-align: center; }
+.pg__import { display: inline-block; font-size: max(12px, .73vw); color: rgba(235,235,235,.55); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.pg__import:hover { color: #E3FF71; }
+@media (max-width: 1100px) { .pg__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+  .pg { padding: 96px 20px 64px; }
+  .pg__grid { grid-template-columns: 1fr; }
+}
+
 /* ---------- Scroll reveal ---------- */
 .reveal {
   opacity: 0;
