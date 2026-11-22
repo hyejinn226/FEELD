@@ -1,7 +1,7 @@
 /* =========================================================
    FEELD — 저장된 엽서 모아보기 (postcards.html)
    - 전시 때 백업한 엽서(assets/postcard/archive.json)를 만든 순서대로(No.001부터) 정렬해 보여 줌
-   - 처음엔 글 면(뒷면)이 보이고, 엽서를 누르면 사진 면(앞면)으로 뒤집힘
+   - 목록은 글 면(뒷면)으로 보이고, 엽서를 누르면 크게 보기 → 크게 본 엽서를 누르면 사진 면(앞면)으로 뒤집힘
    - 엽서마다 [엽서 저장] → 사진 면 위, 글 면 아래로 붙인 PNG 한 장(2112×2452)으로 다운로드
    ========================================================= */
 (() => {
@@ -35,41 +35,112 @@
     grid.appendChild(frag);
   }
 
+  const whenOf = (c) => {
+    const w = c.ts ? new Date(c.ts) : null;
+    return w ? `${w.getMonth() + 1}월 ${w.getDate()}일 ${pad(w.getHours())}:${pad(w.getMinutes())}` : '';
+  };
+  // 엽서 한 장 (처음엔 글 면이 보이게 is-flipped)
+  const pcHtml = (c, lazy) => {
+    const L = lazy ? ' loading="lazy"' : '';
+    return `
+        <span class="pc__inner">
+          <span class="pc__face pc__front">
+            <img class="pc__tpl" src="${BASE}front.webp" alt=""${L} draggable="false" />
+            <img class="pc__photo" src="${PHOTO(c.photo || 0)}" alt=""${L} draggable="false" />
+          </span>
+          <span class="pc__face pc__back">
+            <img class="pc__tpl" src="${BASE}back.webp" alt=""${L} draggable="false" />
+            <img class="pc__stamp" src="${STAMP(c.stamp || 0)}" alt=""${L} draggable="false" />
+            <img class="pc__mark" src="${BASE}postmark.svg" alt=""${L} draggable="false" />
+            <span class="pc__text"></span>
+          </span>
+        </span>`;
+  };
+  const fillPc = (pc, c) => {
+    pc.className = 'pc is-flipped' + (c.marked !== false ? ' is-marked' : '');
+    pc.querySelector('.pc__text').textContent = c.text || '';
+    pc.style.setProperty('--mr', '0deg');
+    if (cwRO) cwRO.observe(pc);
+  };
+
   function item(c, no) {
     const li = document.createElement('li');
     li.className = 'pg__item';
-    const when = c.ts ? new Date(c.ts) : null;
-    const whenTxt = when ? `${when.getMonth() + 1}월 ${when.getDate()}일 ${pad(when.getHours())}:${pad(when.getMinutes())}` : '';
     li.innerHTML = `
-      <button type="button" class="pc is-flipped${c.marked !== false ? ' is-marked' : ''}" aria-label="엽서 ${no}번 — 눌러서 앞뒤 뒤집기">
-        <span class="pc__inner">
-          <span class="pc__face pc__front">
-            <img class="pc__tpl" src="${BASE}front.webp" alt="" loading="lazy" draggable="false" />
-            <img class="pc__photo" src="${PHOTO(c.photo || 0)}" alt="" loading="lazy" draggable="false" />
-          </span>
-          <span class="pc__face pc__back">
-            <img class="pc__tpl" src="${BASE}back.webp" alt="" loading="lazy" draggable="false" />
-            <img class="pc__stamp" src="${STAMP(c.stamp || 0)}" alt="" loading="lazy" draggable="false" />
-            <img class="pc__mark" src="${BASE}postmark.svg" alt="" loading="lazy" draggable="false" />
-            <span class="pc__text"></span>
-          </span>
-        </span>
-      </button>
+      <button type="button" class="pc" aria-label="엽서 ${no}번 크게 보기">${pcHtml(c, true)}</button>
       <div class="pg__meta">
-        <span class="pg__no">No.${pad(no, 3)}</span><span class="pg__when">${whenTxt}</span>
+        <span class="pg__no">No.${pad(no, 3)}</span><span class="pg__when">${whenOf(c)}</span>
         <span class="pg__dl">
           <button type="button" class="pg__btn">엽서 저장</button>
         </span>
       </div>`;
-    li.querySelector('.pc__text').textContent = c.text || '';
     const pc = li.querySelector('.pc');
-    pc.style.setProperty('--mr', '0deg');
-    if (cwRO) cwRO.observe(pc);
-    pc.addEventListener('click', () => pc.classList.toggle('is-flipped'));
+    fillPc(pc, c);
+    pc.addEventListener('click', () => openLb(no - 1));
     const btn = li.querySelector('.pg__btn');
     btn.addEventListener('click', () => download(c, no, btn));
     return li;
   }
+
+  /* ---------- 크게 보기 ----------
+     엽서를 누르면 화면 가운데에 크게 (글 면 먼저). 크게 본 엽서를 누르면 앞뒤 뒤집기.
+     ‹ › 버튼·키보드 ←→로 이전/다음, ×·바깥 클릭·Esc로 닫기 */
+  const lb = document.createElement('div');
+  lb.className = 'pg__lb';
+  lb.hidden = true;
+  lb.setAttribute('role', 'dialog');
+  lb.setAttribute('aria-modal', 'true');
+  lb.setAttribute('aria-label', '엽서 크게 보기');
+  lb.innerHTML = `
+    <button type="button" class="pg__lb-close" aria-label="닫기">×</button>
+    <button type="button" class="pg__lb-nav pg__lb-prev" aria-label="이전 엽서">‹</button>
+    <div class="pg__lb-body">
+      <button type="button" class="pc" aria-label="눌러서 앞뒤 뒤집기"></button>
+      <div class="pg__meta pg__lb-meta">
+        <span class="pg__no"></span><span class="pg__when"></span>
+        <span class="pg__lb-hint">엽서를 누르면 앞뒤가 뒤집혀요</span>
+        <span class="pg__dl"><button type="button" class="pg__btn">엽서 저장</button></span>
+      </div>
+    </div>
+    <button type="button" class="pg__lb-nav pg__lb-next" aria-label="다음 엽서">›</button>`;
+  document.body.appendChild(lb);
+  const lbPc = lb.querySelector('.pg__lb-body .pc');
+  const lbNo = lb.querySelector('.pg__lb-meta .pg__no');
+  const lbWhen = lb.querySelector('.pg__lb-meta .pg__when');
+  const lbBtn = lb.querySelector('.pg__lb-meta .pg__btn');
+  let cur = -1;
+  function showLb(i) {
+    cur = (i + cards.length) % cards.length;
+    const c = cards[cur];
+    lbPc.innerHTML = pcHtml(c, false);
+    fillPc(lbPc, c);
+    lbNo.textContent = `No.${pad(cur + 1, 3)}`;
+    lbWhen.textContent = whenOf(c);
+  }
+  function openLb(i) {
+    showLb(i);
+    lb.hidden = false;
+    document.documentElement.classList.add('pg-lb-open');
+    requestAnimationFrame(() => lb.classList.add('is-on'));
+    lb.querySelector('.pg__lb-close').focus({ preventScroll: true });
+  }
+  function closeLb() {
+    lb.classList.remove('is-on');
+    document.documentElement.classList.remove('pg-lb-open');
+    setTimeout(() => { if (!lb.classList.contains('is-on')) lb.hidden = true; }, 300);
+  }
+  lbPc.addEventListener('click', () => lbPc.classList.toggle('is-flipped'));
+  lb.querySelector('.pg__lb-close').addEventListener('click', closeLb);
+  lb.querySelector('.pg__lb-prev').addEventListener('click', () => showLb(cur - 1));
+  lb.querySelector('.pg__lb-next').addEventListener('click', () => showLb(cur + 1));
+  lb.addEventListener('click', (e) => { if (e.target === lb || e.target.classList.contains('pg__lb-body')) closeLb(); });
+  lbBtn.addEventListener('click', () => download(cards[cur], cur + 1, lbBtn));
+  addEventListener('keydown', (e) => {
+    if (lb.hidden) return;
+    if (e.key === 'Escape') closeLb();
+    else if (e.key === 'ArrowLeft') showLb(cur - 1);
+    else if (e.key === 'ArrowRight') showLb(cur + 1);
+  });
 
   /* ---------- PNG 만들기 (사이트 엽서와 같은 비율·위치로 canvas에 그림) ---------- */
   const W = 2112, H = 1226;
