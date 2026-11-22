@@ -1,6 +1,6 @@
 /* =========================================================
    FEELD — 저장된 엽서 모아보기 (postcards.html)
-   - 전시 때 백업한 엽서(assets/postcard/archive.json)를 최신순으로 정렬해 보여 줌
+   - 전시 때 백업한 엽서(assets/postcard/archive.json)를 만든 순서대로(No.001부터) 정렬해 보여 줌
    - 처음엔 글 면(뒷면)이 보이고, 엽서를 누르면 사진 면(앞면)으로 뒤집힘
    - 엽서마다 [엽서 저장] → 사진 면 위, 글 면 아래로 붙인 PNG 한 장(2112×2452)으로 다운로드
    ========================================================= */
@@ -27,7 +27,7 @@
   /* ---------- 화면에 그리기 ---------- */
   function render() {
     grid.innerHTML = '';
-    const list = cards.map((c, i) => ({ c, no: i + 1 })).reverse();   // 번호는 만든 순서(오래된 것 1번), 화면은 최신순
+    const list = cards.map((c, i) => ({ c, no: i + 1 }));   // 번호는 만든 순서, 화면도 No.001(가장 처음 엽서)부터
     countEl.textContent = cards.length ? `모두 ${cards.length}장` : '';
     emptyEl.hidden = cards.length > 0;
     const frag = document.createDocumentFragment();
